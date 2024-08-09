@@ -1,0 +1,136 @@
+/* General styles */
+.container-fluid {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .row {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .col {
+    padding: 15px;
+  }
+  
+  .bg-dark {
+    background-color: #343a40;
+  }
+  
+  .text-white {
+    color: #ffffff;
+  }
+  
+  /* Sidebar specific styles */
+  .min-vh-100 {
+    min-height: 100vh;
+  }
+  
+  .nav-pills .nav-link {
+    color: #adb5bd;
+  }
+  
+  .nav-pills .nav-link.active,
+  .nav-pills .show > .nav-link {
+    color: #ffffff;
+    background-color: #495057;
+  }
+  
+  .nav-link:hover {
+    color: #ffffff;
+  }
+  
+  .nav-link .fs-4 {
+    font-size: 1.5rem;
+  }
+  
+  .collapse.show {
+    display: block;
+  }
+  
+  .nav-link {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-link .ms-1 {
+    margin-left: 0.25rem;
+  }
+  
+  .nav-item {
+    width: 100%;
+  }
+  
+  ul {
+    padding-left: 0;
+  }
+  
+  ul li {
+    list-style: none;
+  }
+  
+  .nav.flex-column .nav-link {
+    padding: 0.5rem 1rem;
+  }
+  
+  .dropdown-menu-dark {
+    background-color: #343a40;
+    border-color: rgba(0, 0, 0, 0.15);
+  }
+  
+  .dropdown-item {
+    color: #adb5bd;
+  }
+  
+  .dropdown-item:hover,
+  .dropdown-item:focus {
+    color: #ffffff;
+    background-color: #495057;
+  }
+  
+  .dropdown-toggle::after {
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .min-vh-100 {
+      min-height: auto;
+    }
+    .fs-5,
+    .d-none.d-sm-inline {
+      display: none !important;
+    }
+    .dropdown-toggle {
+      display: none;
+    }
+    .nav-link .fs-4 {
+      font-size: 1.2rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .col-auto {
+      width: 25%;
+      position: static;
+      flex: 0 0 auto;
+    }
+    .nav-pills .nav-link {
+      text-align: center;
+    }
+  }
+  
+
+  #dMain{
+    padding-top: 20px;
+    
+  }
+
+  
