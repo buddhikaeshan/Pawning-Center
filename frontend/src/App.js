@@ -1,7 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter,Routes,Route} from 'react-router-dom';
-import Login from '../src/Pages/Login';
+// import Login from '../src/Pages/Login';
+import SideBar from './components/SideBar';
 
 function App() {
   return (
@@ -10,8 +11,8 @@ function App() {
       <BrowserRouter>
       
       <Routes>
-        <Route path='/' element={<Login/>} />
-
+        {/* <Route path='/' element={<Login/>} /> */}
+        <Route path='/' element={<SideBar/>} />
       </Routes>
 
       </BrowserRouter>
