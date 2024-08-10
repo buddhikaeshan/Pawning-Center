@@ -133,4 +133,94 @@
     
   }
 
-  
+  /* General styles */
+.container-fluid {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.row {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Sidebar specific styles */
+.fixed-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px; /* Adjust as needed */
+  height: 100vh;
+  z-index: 1000;
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.nav-pills .nav-link {
+  color: #adb5bd;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #ffffff;
+  background-color: #495057;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+.nav-link .fs-4 {
+  font-size: 1.5rem;
+}
+
+.nav-item {
+  width: 100%;
+}
+
+ul {
+  padding-left: 0;
+}
+
+ul li {
+  list-style: none;
+}
+
+.nav.flex-column .nav-link {
+  padding: 0.5rem 1rem;
+}
+
+/* Main content area styles */
+.content-area {
+  margin-left: 250px; /* This should match the width of the sidebar */
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fixed-sidebar {
+      width: 100px; /* Reduced width for smaller screens */
+  }
+
+  .content-area {
+      margin-left: 100px; /* Adjust to match reduced sidebar width */
+  }
+
+  .fs-5,
+  .d-none.d-sm-inline {
+      display: none !important;
+  }
+
+  .nav-link .fs-4 {
+      font-size: 1.2rem;
+  }
+}
+
+#dMain {
+  padding-top: 20px;
+}

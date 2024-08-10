@@ -1,0 +1,63 @@
+/* Sidebar specific styles */
+.fixed-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px; /* Adjust as needed */
+    height: 100vh;
+    z-index: 1000;
+}
+
+.min-vh-100 {
+    min-height: 100vh;
+}
+
+.nav-pills .nav-link {
+    color: #adb5bd;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    color: #ffffff;
+    background-color: #495057;
+}
+
+.nav-link:hover {
+    color: #ffffff;
+}
+
+.nav-link .fs-4 {
+    font-size: 1.5rem;
+}
+
+.nav-item {
+    width: 100%;
+}
+
+ul {
+    padding-left: 0;
+}
+
+ul li {
+    list-style: none;
+}
+
+.nav.flex-column .nav-link {
+    padding: 0.5rem 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fixed-sidebar {
+        width: 100px; /* Reduced width for smaller screens */
+    }
+
+    .nav-link .fs-4 {
+        font-size: 1.2rem;
+    }
+
+    .fs-5,
+    .d-none.d-sm-inline {
+        display: none !important;
+    }
+}
