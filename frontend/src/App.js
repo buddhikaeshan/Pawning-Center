@@ -7,6 +7,9 @@ import Customers from './Pages/Super Admin/Customers';
 import Products from './Pages/Super Admin/Products';
 import Form from './Pages/Super Admin/Form';  // Import the Form component
 import CreateAdmin from './Pages/Super Admin/CreateAdmin';
+import Interest from './Pages/Super Admin/Interest';
+
+
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
           <Route path='/Products' element={<Products />} />
           <Route path='/Form' element={<Form />} /> 
           <Route path='/CreateAdmin' element={<CreateAdmin />} /> 
+          <Route path='/Interest' element={<Interest />} /> 
+        
+
         </Routes>
       </BrowserRouter>
     </div>

@@ -52,6 +52,10 @@ ul li {
         width: 100px; /* Reduced width for smaller screens */
     }
 
+    .sidebar {
+        width: 100px; /* Reduced width for smaller screens */
+    }
+
     .nav-link .fs-4 {
         font-size: 1.2rem;
     }
@@ -60,10 +64,6 @@ ul li {
     .d-none.d-sm-inline {
         display: none !important;
     }
-}
-
-@media (max-width: 768px) {
-   
 
     .content-area {
         margin-left: 0px; /* Adjust to match reduced sidebar width */
