@@ -1,12 +1,15 @@
 import React from 'react';
-import Sidebar from '../../components/Sidebar';
 import './Dashboard.css';
+import Sidebar from '../../components/Sidebar';
 
 const Dashboard = () => {
     return (
         <div className="container-fluid">
             <div className="row flex-nowrap">
-                <Sidebar />
+                {/* Sidebar */}
+                
+                <Sidebar/>
+
                 {/* Main Content */}
                 <div className="col py-3 content-area">
                     <h3>Dashboard</h3>

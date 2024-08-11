@@ -61,3 +61,20 @@ ul li {
         display: none !important;
     }
 }
+
+@media (max-width: 768px) {
+   
+
+    .content-area {
+        margin-left: 0px; /* Adjust to match reduced sidebar width */
+    }
+
+    .nav-link .fs-4 {
+        font-size: 1.2rem;
+    }
+
+    .fs-5,
+    .d-none.d-sm-inline {
+        display: none !important;
+    }
+}

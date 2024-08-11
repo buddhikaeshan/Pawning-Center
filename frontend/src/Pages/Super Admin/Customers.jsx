@@ -3,6 +3,11 @@ import Sidebar from '../../components/Sidebar';
 import './Customers.css';
 
 const Customers = () => {
+
+    const openFormWindow = () => {
+        window.open('/Form', 'Form', 'width=600,height=800'); // Opens a new window with the specified dimensions
+    };
+
     return (
         <div className="container-fluid">
             <div className="row flex-nowrap">
@@ -11,7 +16,6 @@ const Customers = () => {
                     <h1 className="text-center mb-4">Customer Details</h1>
 
                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
-
                         <div className="input-group w-100 w-md-50 mb-3 mb-md-0">
                             <input type="text" className="form-control" placeholder="Search" />
                             <button className="btn btn-outline-secondary">
@@ -20,7 +24,9 @@ const Customers = () => {
                         </div>
                         
                         <div className="ms-md-3 mt-3 mt-md-0">
-                            <button className="btn btn-success btn-sm">Add Customer</button>
+                            <button className="btn btn-success btn-sm" onClick={openFormWindow}>
+                                Add Customer
+                            </button>
                         </div>
                     </div>
 
@@ -33,7 +39,7 @@ const Customers = () => {
                                     <th>NIC</th>
                                     <th>Address</th>
                                     <th>Phone</th>
-                                    <th>Item Name</th>
+                                    
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -44,7 +50,7 @@ const Customers = () => {
                                     <td>**********</td>
                                     <td>12, Kandy Kandy</td>
                                     <td>77******</td>
-                                    <td>item name</td>
+                                    
                                     <td>
                                         <button className="btn btn-primary btn-sm me-2">Update</button>
                                         <button className="btn btn-danger btn-sm">Delete</button>
