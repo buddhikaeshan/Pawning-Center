@@ -160,3 +160,62 @@ app.delete('/api/customers/:id', async (req, res) => {
         res.status(500).json({ message: 'Failed to delete customer' });
     }
 });
+
+// Route to delete an item by ID
+app.delete('/api/items/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await Item.findByIdAndDelete(id);
+        if (!result) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+        res.status(200).json({ message: 'Item deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting item:', error);
+        res.status(500).json({ message: 'Failed to delete item' });
+    }
+});
+
+
+// Update customer endpoint
+app.put('/api/customers/:id', async (req, res) => {
+    const { id } = req.params;
+    const { customerName, nic, address, phone } = req.body;
+
+    try {
+        const updatedCustomer = await Customer.findByIdAndUpdate(
+            id,
+            { customerName, nic, address, phone },
+            { new: true } // Return the updated document
+        );
+        if (!updatedCustomer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+        res.status(200).json(updatedCustomer);
+    } catch (error) {
+        console.error('Error updating customer:', error);
+        res.status(500).json({ message: 'Error updating customer' });
+    }
+});
+
+
+// Update item endpoint
+app.put('/api/items/:id', async (req, res) => {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    try {
+        const updatedItem = await Item.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true } // Return the updated document
+        );
+        if (!updatedItem) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+        res.status(200).json(updatedItem);
+    } catch (error) {
+        console.error('Error updating item:', error);
+        res.status(500).json({ message: 'Error updating item' });
+    }
+});

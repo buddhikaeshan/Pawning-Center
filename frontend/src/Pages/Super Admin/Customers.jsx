@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../../components/Sidebar';
-import './Customers.css';
 import axios from 'axios';
 
 const Customers = () => {
     const [customers, setCustomers] = useState([]);
-    const [searchTerm, setSearchTerm] = useState(''); // State to hold the search term
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCustomer, setSelectedCustomer] = useState(null); // For selected customer to edit
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchCustomers = async () => {
@@ -42,6 +43,21 @@ const Customers = () => {
         }
     };
 
+    // Handle update
+    const handleUpdate = async () => {
+        if (selectedCustomer) {
+            try {
+                await axios.put(`http://localhost:5000/api/customers/${selectedCustomer._id}`, selectedCustomer);
+                setCustomers(customers.map(customer => 
+                    customer._id === selectedCustomer._id ? selectedCustomer : customer
+                ));
+                setShowModal(false); // Close modal after update
+            } catch (error) {
+                console.error('Error updating customer:', error);
+            }
+        }
+    };
+
     return (
         <div className="container-fluid">
             <div className="row flex-nowrap">
@@ -56,8 +72,8 @@ const Customers = () => {
                                 className="form-control"
                                 id="datatable-search-input"
                                 placeholder="Search Name or Nic"
-                                value={searchTerm} // Bind input value to searchTerm state
-                                onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm on input change
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
 
@@ -89,7 +105,15 @@ const Customers = () => {
                                         <td>{customer.address}</td>
                                         <td>{customer.phone}</td>
                                         <td>
-                                            <button className="btn btn-primary btn-sm me-2">Update</button>
+                                            <button
+                                                className="btn btn-primary btn-sm me-2"
+                                                onClick={() => {
+                                                    setSelectedCustomer(customer);
+                                                    setShowModal(true);
+                                                }}
+                                            >
+                                                Update
+                                            </button>
                                             <button
                                                 className="btn btn-danger btn-sm"
                                                 onClick={() => handleDelete(customer._id)}
@@ -102,6 +126,70 @@ const Customers = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Update Modal */}
+                    {showModal && (
+                        <div className="modal fade show" style={{ display: 'block' }} role="dialog">
+                            <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title">Update Customer</h5>
+                                        <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        {selectedCustomer && (
+                                            <div>
+                                                <div className="mb-3">
+                                                    <label htmlFor="name" className="form-label">Name</label>
+                                                    <input
+                                                        type="text"
+                                                        id="name"
+                                                        className="form-control"
+                                                        value={selectedCustomer.customerName}
+                                                        onChange={(e) => setSelectedCustomer({ ...selectedCustomer, customerName: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div className="mb-3">
+                                                    <label htmlFor="nic" className="form-label">NIC</label>
+                                                    <input
+                                                        type="text"
+                                                        id="nic"
+                                                        className="form-control"
+                                                        value={selectedCustomer.nic}
+                                                        onChange={(e) => setSelectedCustomer({ ...selectedCustomer, nic: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div className="mb-3">
+                                                    <label htmlFor="address" className="form-label">Address</label>
+                                                    <input
+                                                        type="text"
+                                                        id="address"
+                                                        className="form-control"
+                                                        value={selectedCustomer.address}
+                                                        onChange={(e) => setSelectedCustomer({ ...selectedCustomer, address: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div className="mb-3">
+                                                    <label htmlFor="phone" className="form-label">Phone</label>
+                                                    <input
+                                                        type="text"
+                                                        id="phone"
+                                                        className="form-control"
+                                                        value={selectedCustomer.phone}
+                                                        onChange={(e) => setSelectedCustomer({ ...selectedCustomer, phone: e.target.value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
+                                        <button type="button" className="btn btn-primary" onClick={handleUpdate}>Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
