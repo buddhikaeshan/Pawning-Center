@@ -9,7 +9,7 @@ input::-webkit-inner-spin-button {
 .caption {
     font-family: "Sulphur Point", sans-serif;
     font-weight: 400;
-    font-size: 48px;
+    font-size: 40px;
 }
 
 input[type=number] {
@@ -48,8 +48,6 @@ form {
     max-width: 200px;
 }
 
-
-
 label,
 p {
     font-family: "Lato", sans-serif;
@@ -80,7 +78,6 @@ p {
 .error p {
     color: red;
 }
-
 
 .btn {
     width: max(10vw, 170px);
@@ -123,6 +120,9 @@ p {
     .calculater-right {
         min-width: 100%;
         margin-bottom: 20px;
+    }
+    .caption{
+        font-size: 20px;
     }
 
 }

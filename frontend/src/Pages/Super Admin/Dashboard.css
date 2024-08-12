@@ -1,4 +1,3 @@
-/* General container styles */
 .container-fluid {
     margin: 0;
     padding: 0;
@@ -9,29 +8,26 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    display: flex; /* Use flexbox for alignment */
+    display: flex;
 }
 
-/* Sidebar specific styles */
 .sidebar {
-    flex: 0 0 250px; /* Sidebar width */
+    flex: 0 0 250px;
 }
 
-/* Main content area styles */
 .content-area {
     flex: 1;
     overflow-y: auto;
     padding: 15px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .sidebar {
-        flex: 0 0 100px; /* Reduced width for smaller screens */
+        flex: 0 0 100px;
     }
 
     .content-area {
-        margin-left: 100px; /* Adjust to match reduced sidebar width */
+        margin-left: 100px;
     }
 }
 
