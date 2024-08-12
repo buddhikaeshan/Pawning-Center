@@ -71,7 +71,10 @@ ul li {
 .nav.flex-column .nav-link {
     padding: 0.5rem 1rem;
 }
-
+.sidebar-center{
+    display: inline-block;
+    margin: 0 auto;
+}
 @media (max-width: 768px) {
     .caption {
         font-size: 10px;

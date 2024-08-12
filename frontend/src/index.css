@@ -11,6 +11,14 @@ body {
 code {
   font-family: "Lato", sans-serif;
 }
+
+.caption {
+  font-family: "Sulphur Point", sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+  margin-top: 10px;
+}
+
 .btnall{
   width: max(10vw, 170px);
   font-family: system-ui, sans-serif;
