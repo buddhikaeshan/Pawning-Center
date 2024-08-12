@@ -38,3 +38,6 @@ form {
     margin-bottom:3px ;
     max-width: 100%;
 }
+.form-button button{
+    margin: 10px;
+}

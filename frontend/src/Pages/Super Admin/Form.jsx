@@ -156,8 +156,8 @@ const Form = ({ onClose }) => {
                         />
                     </div>
 
-                    <div className="d-flex justify-content-center mt-3">
-                        <button type="submit" className="btnall btnSave btn-primary btn-sm">Enter</button>
+                    <div className="d-flex form-button justify-content-center mt-3">
+                        <button type="submit" className="btnall btnSave btn-sm">Enter</button>
                         <button type="button" className="btnall btnReset btn-danger btn-sm" onClick={onClose}>
                             Cancel
                         </button>
