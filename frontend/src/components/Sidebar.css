@@ -107,3 +107,13 @@ ul li {
         text-align: center;
     }
 }
+
+.sidebar {
+    background-color: #343a40;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    overflow: hidden;
+}
