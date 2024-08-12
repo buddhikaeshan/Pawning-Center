@@ -98,7 +98,7 @@ const CreateAdmin = () => {
                                 <option value="superadmin">Super Admin</option>
                             </select>
                         </div>
-                        <div className="d-flex justify-content-center mt-4">
+                        <div className="d-flex justify-content-between mt-4">
                             <button type="submit" className="btnall btnSave btn-success">Save</button>
                             <button type="button" className="btnall btnReset btn-danger" onClick={handleReset}>Reset</button>
                             

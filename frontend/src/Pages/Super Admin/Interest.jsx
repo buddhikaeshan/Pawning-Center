@@ -109,7 +109,7 @@ const Interest = () => {
                     </div>
 
                     <div className="">
-                        <button type="button" className='btnSave btnall' onClick={calculater}>Calculate</button>
+                        <button type="button" className='btnSave btnall' onClick={calculater}>Calculate</button>{' '}
                         <button type="button" className='btnReset btnall' onClick={resetBtn}>Reset</button>
                     </div>
 
