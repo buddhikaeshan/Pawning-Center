@@ -41,7 +41,7 @@ const Sidebar = () => {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/Settings" className={({ isActive }) => "navlink btn px-3 align-middle mb-4 " + (isActive ? "active" : "")}>
+                        <NavLink to="/Profile" className={({ isActive }) => "navlink btn px-3 align-middle mb-4 " + (isActive ? "active" : "")}>
                             <i className="fs-4 bi bi-gear"></i>
                             <span className="ms-1 d-none d-sm-inline">Settings</span>
                         </NavLink>
