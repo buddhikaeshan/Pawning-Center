@@ -17,8 +17,8 @@ input[type=number] {
     background-color: #fff;
     box-shadow: 1px 3px 10px 1px rgba(0, 0, 0, 0.200);
     width: 250px;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 400;
     border: none;
     border-radius: 15px;
     padding: 5px 20px;
@@ -79,36 +79,7 @@ p {
     color: red;
 }
 
-.btn {
-    width: max(10vw, 170px);
-    font-family: system-ui, sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    border-radius: 20px;
-    border: none;
-    padding: 8px 0px;
-    border-radius: 15px;
-    cursor: pointer;
-}
 
-.btnCal {
-    background-color: #9fff95;
-    border: 1px solid #9fff95;
-}
-
-.btnCal:hover {
-    border: 1px solid #9fff95;
-}
-
-.btnReset {
-    background-color: #ff9595;
-    border: 1px solid #ff9595;
-}
-
-.btnReset:hover {
-    border: 1px solid #ff9595;
-
-}
 
 
 @media (max-width: 768px) {
@@ -124,12 +95,18 @@ p {
     .caption{
         font-size: 20px;
     }
+input[type=number] {
+    margin: 0px;
+}
 
 }
 
 @media (max-width: 576px) {
     .form-group {
         flex-direction: column;
+    }
+    label {
+        display: none;
     }
 
     .form-group label {
@@ -144,9 +121,7 @@ p {
         width: 100%;
     }
 
-    label {
-        display: none;
-    }
+    
 
     .btn {
         left: 4%;

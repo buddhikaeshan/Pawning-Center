@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Sidebar from '../../components/Sidebar';
-import './Dashboard.css';
+import './CreateAdmin.css'
 import axios from 'axios';
 
 const CreateAdmin = () => {
@@ -49,7 +49,7 @@ const CreateAdmin = () => {
                 <Sidebar />
 
                 <div className="col py-3 content-area">
-                    <h1 className="text-center mb-4">Add New Admins</h1>
+                    <h1 className="text-center caption mb-4">Add New Admins</h1>
                     {error && <div className="alert alert-danger">{error}</div>}
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         <div className="form-group">
@@ -98,9 +98,10 @@ const CreateAdmin = () => {
                                 <option value="superadmin">Super Admin</option>
                             </select>
                         </div>
-                        <div className="d-flex justify-content-between mt-4">
-                            <button type="button" className="btn btn-danger" onClick={handleReset}>Reset</button>
-                            <button type="submit" className="btn btn-success">Save</button>
+                        <div className="d-flex justify-content-center mt-4">
+                            <button type="submit" className="btnall btnSave btn-success">Save</button>
+                            <button type="button" className="btnall btnReset btn-danger" onClick={handleReset}>Reset</button>
+                            
                         </div>
                     </form>
                 </div>

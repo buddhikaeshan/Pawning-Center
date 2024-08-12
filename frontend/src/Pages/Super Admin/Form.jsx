@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'; 
+import './Form.css'
 
 const Form = ({ onClose }) => {
     const [formData, setFormData] = useState({
@@ -155,11 +156,12 @@ const Form = ({ onClose }) => {
                         />
                     </div>
 
-                    <div className="d-flex justify-content-between mt-3">
-                        <button type="button" className="btn btn-danger btn-sm" onClick={onClose}>
+                    <div className="d-flex justify-content-center mt-3">
+                        <button type="submit" className="btnall btnSave btn-primary btn-sm">Enter</button>
+                        <button type="button" className="btnall btnReset btn-danger btn-sm" onClick={onClose}>
                             Cancel
                         </button>
-                        <button type="submit" className="btn btn-primary btn-sm">Enter</button>
+                        
                     </div>
                 </form>
             </div>

@@ -10,7 +10,7 @@ const Dashboard = () => {
                 <Sidebar/>
 
                 <div className="col py-3 content-area">
-                    <h3>Dashboard</h3>
+                    <h3 className='caption'>Dashboard</h3>
                     <main className="col-md-12 p-3 bg-white">
                         <div className="row">
                             <div className="col-md-4 mb-3" id="dMain">
