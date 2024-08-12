@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../../components/Sidebar';
 import axios from 'axios';
+import './Customers.css'
 
 const Customers = () => {
     const [customers, setCustomers] = useState([]);
@@ -63,7 +64,7 @@ const Customers = () => {
             <div className="row flex-nowrap">
                 <Sidebar />
                 <div className="col py-3 content-area">
-                    <h1 className="text-center mb-4">Customer Details</h1>
+                    <h1 className="text-center mb-4 caption">Customer Details</h1>
 
                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
                         <div className="input-group w-100 w-md-50 mb-3 mb-md-0">
@@ -78,7 +79,7 @@ const Customers = () => {
                         </div>
 
                         <div className="ms-md-3 mt-3 mt-md-0">
-                            <button className="btn btn-success btn-sm" onClick={openFormWindow}>
+                            <button className="btnAdd btnall btn-sm" id="" onClick={openFormWindow}>
                                 Add Customer
                             </button>
                         </div>
@@ -106,7 +107,7 @@ const Customers = () => {
                                         <td>{customer.phone}</td>
                                         <td>
                                             <button
-                                                className="btn btn-primary btn-sm me-2"
+                                                className="btnUpdate btn btn-primary btn-sm me-2"
                                                 onClick={() => {
                                                     setSelectedCustomer(customer);
                                                     setShowModal(true);
@@ -115,7 +116,7 @@ const Customers = () => {
                                                 Update
                                             </button>
                                             <button
-                                                className="btn btn-danger btn-sm"
+                                                className="btnDelete btn btn-danger btn-sm"
                                                 onClick={() => handleDelete(customer._id)}
                                             >
                                                 Delete

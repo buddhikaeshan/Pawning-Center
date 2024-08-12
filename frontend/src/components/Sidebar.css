@@ -1,37 +1,63 @@
-/* Sidebar specific styles */
-.fixed-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px; /* Adjust as needed */
+.sidebar {
+    background-color: #343a40;
+    color: #ffffff;
     height: 100vh;
-    z-index: 1000;
+    display: flex;
+    flex-direction: column;
 }
 
-.min-vh-100 {
-    min-height: 100vh;
+.nav-pills .navlink,
+.logout {
+    color: #ffffff;
+    background-color: #5827d2;
+    width: max(10vw, 170px);
+    font-family: system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 20px;
+    border: none;
+    padding: 8px 0px;
+    border-radius: 15px;
+    cursor: pointer;
+    gap: 10px;
 }
 
-.nav-pills .nav-link {
-    color: #adb5bd;
-}
-
-.nav-pills .nav-link.active,
-.nav-pills .show > .nav-link {
+.nav-pills .navlink.active,
+.nav-pills .show>.navlink {
     color: #ffffff;
     background-color: #495057;
 }
 
-.nav-link:hover {
+.nav-pills .navlink:hover {
     color: #ffffff;
+    background-color: #007AFF;
 }
 
 .nav-link .fs-4 {
     font-size: 1.5rem;
 }
 
+/* List item styles */
 .nav-item {
     width: 100%;
+}
+
+.logout {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.logout:hover {
+    opacity: 0.9;
 }
 
 ul {
@@ -46,18 +72,22 @@ ul li {
     padding: 0.5rem 1rem;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
-    .fixed-sidebar {
-        width: 100px; /* Reduced width for smaller screens */
+    .caption {
+        font-size: 10px;
     }
 
+    .fixed-sidebar,
     .sidebar {
-        width: 100px; /* Reduced width for smaller screens */
+        width: 100%;
     }
 
-    .nav-link .fs-4 {
-        font-size: 1.2rem;
+    .nav-pills .navlink {
+        width: auto;
+    }
+
+    .btn .btn-danger {
+        width: auto;
     }
 
     .fs-5,
@@ -66,15 +96,24 @@ ul li {
     }
 
     .content-area {
-        margin-left: 0px; /* Adjust to match reduced sidebar width */
+        margin-left: 0px;
     }
 
-    .nav-link .fs-4 {
-        font-size: 1.2rem;
+    .logout {
+        font-size: 13px; 
+        padding: 6px 12px;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
     }
+}
 
-    .fs-5,
-    .d-none.d-sm-inline {
-        display: none !important;
-    }
+.sidebar {
+    background-color: #343a40;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    overflow: hidden;
 }

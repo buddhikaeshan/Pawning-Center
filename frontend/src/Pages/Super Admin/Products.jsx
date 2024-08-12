@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../../components/Sidebar';
 import axios from 'axios';
+import './Products.css'
 
 const Products = () => {
     const [items, setItems] = useState([]);
@@ -103,7 +104,7 @@ const Products = () => {
             <div className="row flex-nowrap">
                 <Sidebar />
                 <div className="col py-3 content-area">
-                    <h1 className="text-center mb-4">Products Details</h1>
+                    <h1 className="text-center caption mb-4">Products Details</h1>
 
                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
                         <div className="input-group w-100 w-md-50 mb-3 mb-md-0">
@@ -120,7 +121,7 @@ const Products = () => {
                             <div className="btn-group">
                                 <button
                                     type="button"
-                                    className="btn btn-secondary dropdown-toggle"
+                                    className="btnall btnToggle btn-secondary dropdown-toggle"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
                                 >

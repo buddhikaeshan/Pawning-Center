@@ -53,3 +53,9 @@
     white-space: nowrap;
 }
 
+.btnAdd{
+    background-color: #6de56d;
+}
+.btnAdd:hover{
+    background-color: #a0ffa0;
+}

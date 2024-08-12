@@ -70,3 +70,16 @@
 .btn-group .dropdown-menu {
     min-width: 200px;
 }
+
+.btnToggle{
+    border: 1px solid #3c3c3c;
+    background-color: #3c3c3c;
+    color: white;
+    transition: 0.5s;
+}
+
+.btnToggle:hover{
+    border: 1px solid #3c3c3c;
+    background-color:white;
+    color: #3c3c3c;
+}
