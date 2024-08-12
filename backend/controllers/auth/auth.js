@@ -59,6 +59,56 @@ async function login(req, res) {
     }
 }
 
+async function resendOTP(req, res) {
+    try {
+        const { email } = req.body;
+
+        const user = await UserModel.findOne({ email });
+
+        if (user) {
+            const otp = generateOTP();
+
+            // Define update query to save OTP
+            const query = { email: email };
+            const update = { $set: { otp: otp } };
+            const options = { new: true };
+
+            // Update document in the database
+            UserModel.findOneAndUpdate(query, update, options)
+                .then(updatedDocument => {
+                    sendEmail(email, "My Business OTP", "Your My Business Verification Code: " + otp);
+
+                    console.log('Document updated:', updatedDocument);
+                    // Send success response
+                    res.json({
+                        message_type: "success",
+                        message: "We sent an OTP again. Check your email for an OTP."
+                    });
+                })
+                .catch(err => {
+                    console.error('Error updating document:', err);
+                    // Send error response if update fails
+                    res.json({
+                        message_type: "error",
+                        message: "Error updating document."
+                    });
+                });
+        } else {
+            res.json({
+                message_type: "error",
+                message: "User not found."
+            });
+        }
+    } catch (error) {
+        console.error("Error occurred while resending otp:", error);
+        res.json({
+            message_type: "error",
+            message: error.message
+        });
+    }
+}
+
+
 async function verifyEmail(req, res) {
     try {
         // Extract email and OTP from request body
@@ -173,6 +223,28 @@ async function socialSingIn(req, res) {
     }
 }
 
+async function getUser(req, res) {
+    try {
+        const { email } = req.body;
+        const user = await UserModel.findOne({ email });
+
+        if (user) {
+            res.json({ message_type: "success", message: user });
+        } else {
+            res.json({
+                message_type: "error",
+                message: "User not found."
+            });
+        }
+    } catch (error) {
+        console.error("Error occurred while getting user:", error);
+        res.json({
+            message_type: "error",
+            message: error.message
+        });
+    }
+}
+
 
 async function changeName(req, res) {
     try {
@@ -221,4 +293,6 @@ module.exports = {
     verifyEmail,
     socialSingIn,
     changeName,
+    resendOTP,
+    getUser
 }

@@ -27,6 +27,20 @@ async function sendEmail(to, subject, text) {
     }
 }
 
+function generateOTP() {
+    const length = 6;
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let otp = '';
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = crypto.randomInt(0, charset.length);
+        otp += charset[randomIndex];
+    }
+
+    return otp;
+}
+
 module.exports = {
+    generateOTP,
     sendEmail
 }
