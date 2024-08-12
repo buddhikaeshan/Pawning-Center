@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const AuthController = require('./controllers/auth/auth')
+const PasswordRecoveryController= require('./controllers/auth/Password_recovery')
 
 const app = express();
 const port = 5000;
@@ -18,6 +20,17 @@ mongoose.connect('mongodb+srv://maleeshapathirana1:1olmMIHQ8xojExRJ@cluster0.yeh
     .catch(err => {
         console.error('Database connection error:', err);
     });
+
+    // Auth Routes
+    app.post('/login',AuthController.login);
+    app.post('/verify', AuthController.verifyEmail);
+    app.post('/change_name', AuthController.changeName);
+
+    // Password recovery routes
+    app.post('/change_password', PasswordRecoveryController.changePassword);
+
+
+
 
 const customerSchema = new mongoose.Schema({
     customerName: String,
