@@ -1,5 +1,9 @@
-.min-vh-100 {
-    min-height: 100vh;
+.sidebar {
+    background-color: #343a40;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .nav-pills .navlink,
@@ -33,6 +37,7 @@
     font-size: 1.5rem;
 }
 
+/* List item styles */
 .nav-item {
     width: 100%;
 }
@@ -72,12 +77,9 @@ ul li {
         font-size: 10px;
     }
 
-    .fixed-sidebar {
-        width: 100px;
-    }
-
+    .fixed-sidebar,
     .sidebar {
-        width: 100px;
+        width: 100%;
     }
 
     .nav-pills .navlink {
@@ -97,16 +99,11 @@ ul li {
         margin-left: 0px;
     }
 
-    .fs-5,
-    .d-none.d-sm-inline {
-        display: none !important;
-    }
-    .logout{
+    .logout {
         font-size: 13px; 
         padding: 6px 12px;
         width: 100%;
         box-sizing: border-box;
         text-align: center;
     }
-
 }
