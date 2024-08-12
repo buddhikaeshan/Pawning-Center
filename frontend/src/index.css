@@ -38,6 +38,20 @@ code {
 .btnReset:hover {
   background-color: #ffa0a0;
 }
+.btnUpdate{
+  background-color: #00d107;
+  border: none;
+  color: #fff;
+  padding:2px 5px;
+  border-radius: 5px;
+}
+.btnDelete{
+  background-color: #d10000;
+  border: none;
+  color: #fff;
+  padding:2px 5px;
+  border-radius: 5px;
+}
 @media (max-width: 768px) {
   .btnall{
     font-size: 12px;

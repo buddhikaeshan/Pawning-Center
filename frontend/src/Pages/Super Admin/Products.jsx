@@ -191,7 +191,7 @@ const Products = () => {
                                         {columnVisibility.actions && (
                                             <td>
                                                 <button
-                                                    className="btn btn-primary btn-sm me-2"
+                                                    className="btnUpdate btn-sm me-2"
                                                     onClick={() => handleUpdate(item)}
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#updateModal"
@@ -199,7 +199,7 @@ const Products = () => {
                                                     Update
                                                 </button>
                                                 <button
-                                                    className="btn btn-danger btn-sm"
+                                                    className="btnDelete btn-danger btn-sm"
                                                     onClick={() => handleDelete(item._id)}
                                                 >
                                                     Delete

@@ -242,7 +242,7 @@ function Profile() {
                 </div>
 
                 <div className="custom-form-group">
-                  <button type="submit" className="btn btn-primary">
+                  <button type="submit" className="btnall btnSave btn-primary">
                     {processing ? "Submitting..." : "Save Changes"}
                   </button>
                 </div>

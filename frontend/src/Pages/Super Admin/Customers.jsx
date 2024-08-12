@@ -107,7 +107,7 @@ const Customers = () => {
                                         <td>{customer.phone}</td>
                                         <td>
                                             <button
-                                                className="btnUpdate btn btn-primary btn-sm me-2"
+                                                className="btnUpdate btn-sm me-2"
                                                 onClick={() => {
                                                     setSelectedCustomer(customer);
                                                     setShowModal(true);
@@ -116,7 +116,7 @@ const Customers = () => {
                                                 Update
                                             </button>
                                             <button
-                                                className="btnDelete btn btn-danger btn-sm"
+                                                className="btnDelete btn-danger btn-sm"
                                                 onClick={() => handleDelete(customer._id)}
                                             >
                                                 Delete
