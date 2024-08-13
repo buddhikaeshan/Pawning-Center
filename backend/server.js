@@ -2,8 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const AuthController = require('./controllers/auth/auth')
-const PasswordRecoveryController= require('./controllers/auth/Password_recovery')
 
 const app = express();
 const port = 5000;
