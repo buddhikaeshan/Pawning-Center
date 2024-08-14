@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const fs = require('fs'); // Remove if not needed
+const multer = require('multer');
+const path = require('path');
 
 const app = express();
 const port = 5000;
@@ -40,6 +43,7 @@ const itemSchema = new mongoose.Schema({
     discount: Number,
     totalPrice: Number,
     status: String,
+    image: Buffer, // Store image as binary data
 });
 
 const Customer = mongoose.model('Customer', customerSchema);
@@ -49,8 +53,11 @@ const Item = mongoose.model('Item', itemSchema);
 app.use(cors());
 app.use(bodyParser.json());
 
-// Handle form submission
-app.post('/api/submit', async (req, res) => {
+const storage = multer.memoryStorage(); // Use memory storage for storing files in memory
+const upload = multer({ storage });
+
+// Middleware for handling image uploads
+app.post('/api/submit', upload.single('image'), async (req, res) => {
     const {
         customerName,
         nic,
@@ -61,6 +68,7 @@ app.post('/api/submit', async (req, res) => {
         itemName,
         priceOfItem,
     } = req.body;
+    const image = req.file; // Image file data
 
     try {
         // Check if customer exists
@@ -70,6 +78,12 @@ app.post('/api/submit', async (req, res) => {
             // Create new customer
             customer = new Customer({ customerName, nic, address, phone });
             await customer.save();
+        }
+
+        // Store image data as binary data
+        let imageData = null;
+        if (image) {
+            imageData = image.buffer; // Use `buffer` property for memory storage
         }
 
         // Save item details
@@ -82,6 +96,7 @@ app.post('/api/submit', async (req, res) => {
             category,
             itemName,
             priceOfItem,
+            image: imageData
         });
 
         await item.save();
@@ -91,7 +106,6 @@ app.post('/api/submit', async (req, res) => {
         res.status(500).json({ message: 'Error saving data' });
     }
 });
-
 
 
 // API endpoint to get all customers
@@ -115,7 +129,22 @@ app.get('/api/items', async (req, res) => {
         res.status(500).json({ message: 'Error fetching items' });
     }
 });
+app.get('/api/items/:id/image', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const item = await Item.findById(id);
 
+        if (!item || !item.image) {
+            return res.status(404).json({ message: 'Image not found' });
+        }
+
+        res.set('Content-Type', 'image/jpeg'); // Adjust the MIME type as necessary
+        res.send(item.image);
+    } catch (error) {
+        console.error('Error fetching item image:', error);
+        res.status(500).json({ message: 'Error fetching item image' });
+    }
+});
 
 const adminSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
@@ -199,6 +228,8 @@ app.put('/api/customers/:id', async (req, res) => {
 });
 
 
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
 // Update item endpoint
 app.put('/api/items/:id', async (req, res) => {
     const { id } = req.params;
@@ -217,24 +248,5 @@ app.put('/api/items/:id', async (req, res) => {
     } catch (error) {
         console.error('Error updating item:', error);
         res.status(500).json({ message: 'Error updating item' });
-    }
-});
-
-
-// Login endpoint
-app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    try {
-        const admin = await Admin.findOne({ username, password });
-        
-        if (admin) {
-            res.status(200).json({ accountType: admin.accountType });
-        } else {
-            res.status(401).json({ message: 'Invalid username or password' });
-        }
-    } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).json({ message: 'Internal server error' });
     }
 });

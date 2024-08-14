@@ -111,16 +111,14 @@ function Profile() {
       <div className="row flex-nowrap">
         <Sidebar />
         <div className="col-md-12">
-          <form onSubmit={handleSubmit}>
+          <form>
             <fieldset>
               <legend>Profile</legend>
-
               <div className="row">
                 <div className="col-md-12">
-                  <label className="form-label mt-4">Name</label>
+                  <label className="form-label mt-4"> Name</label>
                   <input
                     type="text"
-                    id="name"
                     className="form-control"
                     placeholder="Name"
                     value={formData.name}
@@ -130,18 +128,29 @@ function Profile() {
               </div>
               <div className="row">
                 <div className="col-md-12">
-                  <label className="form-label mt-4">Password</label>
-                  <div className="input-wrapper">
+                  <label className="form-label mt-4"> Email</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Email"
+                  />
+                </div>
+              </div>
+              <div className="row mt-3">
+                <div className="col-md-10">
+                  <label>Password:</label>
+                  <div className="input-group">
                     <input
-                      type={passwordObscure ? "password" : "text"}
-                      id="password"
                       className="form-control"
+                      type={passwordInputType}
+                      name="Password"
+                      id="password"
                       placeholder="Password"
                       value={formData.password}
                       onChange={handleChange}
                     />
                     <button
-                      className="input-group-text cursor-pointer"
+                      className="show-password cursor-pointer"
                       type="button"
                       id="obscure"
                       onClick={handleObscurePassword}
@@ -196,21 +205,19 @@ function Profile() {
                   </div>
                 </div>
               </div>
-
               <div className="row">
-                <div className="col-md-12">
-                  <label className="form-label mt-4">Confirm Password</label>
-                  <div className="input-wrapper">
+                <div className="col-md-10">
+                  <label className="form-label mt-4">Confirm Password: </label>
+                  <div className="input-group">
                     <input
-                      type={confirmPasswordObscure ? "password" : "text"}
-                      id="cpassword"
                       className="form-control"
-                      placeholder="Confirm Password"
-                      value={formData.cpassword}
-                      onChange={handleChange}
+                      type={confirmPasswordInputType}
+                      name="password"
+                      id="password"
+                      placeholder="Confirm password"
                     />
                     <button
-                      className="input-group-text cursor-pointer"
+                      className="show-password cursor-pointer"
                       type="button"
                       id="obscure"
                       onClick={handleObscureConfirmPassword}
@@ -225,21 +232,13 @@ function Profile() {
                   )}
                 </div>
               </div>
-
-              {showAlert && (
-                <div className={alertType + " mt-3"} role="alert">
-                  {message}
-                </div>
-              )}
-
               <div className="row mt-4">
-                <div className="col-md-6">
+                <div className="col-md-12">
                   <button className="btnall" type="submit">
                     Save Changes
                   </button>
                 </div>
               </div>
-            </fieldset>
           </form>
         </div>
       </div>
