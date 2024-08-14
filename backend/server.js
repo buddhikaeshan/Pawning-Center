@@ -219,3 +219,22 @@ app.put('/api/items/:id', async (req, res) => {
         res.status(500).json({ message: 'Error updating item' });
     }
 });
+
+
+// Login endpoint
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const admin = await Admin.findOne({ username, password });
+        
+        if (admin) {
+            res.status(200).json({ accountType: admin.accountType });
+        } else {
+            res.status(401).json({ message: 'Invalid username or password' });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
