@@ -9,7 +9,7 @@ const Products = () => {
     const [selectedItem, setSelectedItem] = useState(null); // State to track selected item
     const [columnVisibility, setColumnVisibility] = useState({
         id: false,
-        name: false,
+        name: true,
         nic: true,
         address: false,
         phone: false,
@@ -18,7 +18,7 @@ const Products = () => {
         itemName: true,
         priceOfItem: true,
         endDate: true,
-        interest: true,
+        interest: false,
         discount: true,
         totalPrice: true,
         status: true,
@@ -97,6 +97,11 @@ const Products = () => {
                 console.error('Error updating item status:', error);
             }
         }
+    };
+
+    // Function to get the image URL
+    const getImageUrl = (itemId) => {
+        return `http://localhost:5000/api/items/${itemId}/image`;
     };
 
     return (
@@ -223,6 +228,17 @@ const Products = () => {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
+                            <div className="mb-3">
+
+                                {selectedItem && (
+                                    <img
+                                        src={getImageUrl(selectedItem._id)}
+                                        alt="Item"
+                                        className="img-fluid"
+                                        style={{ maxWidth: '100%', height: 'auto' }}
+                                    />
+                                )}
+                            </div>
                             <div className="mb-3">
                                 <label className="form-label">Customer Name</label>
                                 <input

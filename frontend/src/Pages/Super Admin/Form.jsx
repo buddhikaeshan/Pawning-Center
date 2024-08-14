@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios'; 
-import './Form.css'
+import axios from 'axios';
+import './Form.css';
 
 const Form = ({ onClose }) => {
     const [formData, setFormData] = useState({
@@ -13,26 +13,34 @@ const Form = ({ onClose }) => {
         category: '',
         itemName: '',
         priceOfItem: '',
+        image: null,
     });
 
     const handleChange = (e) => {
-        const { id, value } = e.target;
+        const { id, value, type, files } = e.target;
         setFormData({
             ...formData,
-            [id]: value,
+            [id]: type === 'file' ? files[0] : value,
         });
-    };
+    };    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const formDataToSend = new FormData();
+        for (const key in formData) {
+            formDataToSend.append(key, formData[key]);
+        }
+
         try {
-            const response = await axios.post('http://localhost:5000/api/submit', formData);
-    
-            // Check if response status is 201
+            const response = await axios.post('http://localhost:5000/api/submit', formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
             if (response.status === 201) {
                 alert('Data submitted successfully!');
-                window.close(); 
-                // Reload the /Customers page
+                window.close();
                 window.opener.location.href = '/Customers';
             } else {
                 alert('Unexpected response from server');
@@ -42,8 +50,6 @@ const Form = ({ onClose }) => {
             alert('Error submitting data');
         }
     };
-    
-    
 
     return (
         <div className="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50">
@@ -155,13 +161,24 @@ const Form = ({ onClose }) => {
                             required
                         />
                     </div>
+                    <div className="mb-2">
+                        <label htmlFor="image" className="form-label" style={{ fontSize: '0.9rem' }}>Upload Image</label>
+                        <input
+                            type="file"
+                            className="form-control form-control-sm"
+                            id="image"
+                            onChange={handleChange}
+                            accept="image/*"
+                            required
+                        />
+                    </div>
 
                     <div className="d-flex form-button justify-content-center mt-3">
                         <button type="submit" className="btnall btnSave btn-sm">Enter</button>
                         <button type="button" className="btnall btnReset btn-danger btn-sm" onClick={onClose}>
                             Cancel
                         </button>
-                        
+
                     </div>
                 </form>
             </div>

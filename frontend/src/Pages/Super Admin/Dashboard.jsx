@@ -16,7 +16,7 @@ const Dashboard = () => {
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/Customers" 
-                                    className="p-3 bg-warning text-dark rounded d-flex align-items-center justify-content-center text-decoration-none"
+                                    className="p-3 tabs cusTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Customer Details
                                 </NavLink>
@@ -24,7 +24,7 @@ const Dashboard = () => {
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/Interest" 
-                                    className="p-3 bg-success text-white rounded d-flex align-items-center justify-content-center text-decoration-none"
+                                    className="p-3 tabs calTab  d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Calculate Interest
                                 </NavLink>
@@ -32,7 +32,7 @@ const Dashboard = () => {
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/Products" 
-                                    className="p-3 bg-secondary text-white rounded d-flex align-items-center justify-content-center text-decoration-none"
+                                    className="p-3 tabs addTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Add Products/Items
                                 </NavLink>
@@ -40,7 +40,7 @@ const Dashboard = () => {
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/CreateAdmin" 
-                                    className="p-3 bg-info text-white rounded d-flex align-items-center justify-content-center text-decoration-none"
+                                    className="p-3 tabs createAdTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Create Admins
                                 </NavLink>
@@ -48,7 +48,7 @@ const Dashboard = () => {
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/Report" 
-                                    className="p-3 bg-danger text-dark rounded d-flex align-items-center justify-content-center text-decoration-none"
+                                    className="p-3 tabs reportTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Monthly Report
                                 </NavLink>
@@ -56,7 +56,7 @@ const Dashboard = () => {
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/Settings" 
-                                    className="p-3 bg-warning text-dark rounded d-flex align-items-center justify-content-center text-decoration-none"
+                                    className="p-3 tabs setTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Account Settings
                                 </NavLink>

@@ -21,43 +21,43 @@ function Profile() {
     <div className="container-fluid">
       <div className="row flex-nowrap">
         <Sidebar />
-        <div className="col-md-12">
+        <div className="col py-3 content-area">
           <form>
-            <fieldset>
-              <legend>Profile</legend>
+              <legend className="caption">Profile</legend>
               <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-12 form-group">
                   <label className="form-label mt-4"> Name</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className="proInput"
                     placeholder="Name"
                   />
                 </div>
               </div>
               <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-12 form-group">
                   <label className="form-label mt-4"> Email</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className="proInput"
                     placeholder="Email"
                   />
                 </div>
               </div>
-              <div className="row mt-3">
-                <div className="col-md-10">
-                  <label>Password:</label>
+
+              <div className="row">
+                <div className="col-md-10 form-group">
+                  <label >Password:</label>
                   <div className="input-group">
                     <input
-                      className="form-control"
+                      className="proInput password"
                       type={passwordInputType}
                       name="Password"
                       id="password"
                       placeholder="Password"
                     />
                     <button
-                      className="input-group-text cursor-pointer"
+                      className="show-password cursor-pointer"
                       type="button"
                       id="obscure"
                       onClick={togglePasswordObscure}
@@ -67,19 +67,20 @@ function Profile() {
                   </div>
                 </div>
               </div>
+              
               <div className="row">
-                <div className="col-md-10">
-                  <label className="form-label mt-4">Confirm Password: </label>
+                <div className="col-md-10 form-group">
+                  <label>Password: </label>
                   <div className="input-group">
                     <input
-                      className="form-control"
+                      className="proInput password"
                       type={confirmPasswordInputType}
                       name="password"
                       id="password"
                       placeholder="Confirm password"
                     />
                     <button
-                      className="input-group-text cursor-pointer"
+                      className="show-password cursor-pointer"
                       type="button"
                       id="obscure"
                       onClick={toggleConfirmPasswordObscure}
@@ -89,14 +90,14 @@ function Profile() {
                   </div>
                 </div>
               </div>
+
               <div className="row mt-4">
                 <div className="col-md-12">
-                  <button className="btnall" type="submit">
+                  <button className="btnall btnSave" type="submit">
                     Save Changes
                   </button>
                 </div>
               </div>
-            </fieldset>
           </form>
         </div>
       </div>

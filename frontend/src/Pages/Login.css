@@ -1,0 +1,68 @@
+.login-form {
+    position: relative;
+    top: 70px;
+    font-family: "Sulphur Point", sans-serif;
+    font-weight: 400;
+}
+
+.caption-login {
+    font-size: 48px;
+    margin: 0;
+    padding: 0;
+    font-style: bold;
+}
+
+.form-com label,
+.form-com input {
+    display: block;
+    text-align: left;
+}
+
+.form-com {
+    margin-bottom: 30px;
+}
+
+.form-com label {
+    font-size: 13px;
+    font-family: "Sulphur Point", sans-serif;
+    font-weight: 500;
+}
+
+.text-box {
+    color: #222;
+    background-color: #fff;
+    box-shadow: 1px 3px 10px 1px rgba(0, 0, 0, 0.200);
+    width: max(10vw, 300px);
+    font-size: 13px;
+    font-weight: 400;
+    border: none;
+    border-radius: 15px;
+    padding: 5px 20px;
+    outline: none;
+    font-family: "Lato", sans-serif;
+}
+
+.btnLog {
+    font-size: 15px;
+    color: #fff;
+    font-weight: 900;
+    padding: 12px 40px;
+    background: #0064B1;
+    border: none;
+    border-radius: 20px; 
+}
+
+.form-com.position-relative {
+    position: relative;
+  }
+  
+  .show-password-btn {
+    position: absolute;
+    top: 70%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  

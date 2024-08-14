@@ -21,6 +21,34 @@
     padding: 15px;
 }
 
+.tabs{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 17px;
+    color: #000;
+    height: 150px;
+    border-radius: 50px;
+    
+}
+.cusTab{
+    background-color: #fff6a3;
+}
+.calTab{
+    background-color: #f9cbfd;
+}
+.addTab{
+    background-color: #a3fdff;
+}
+.createAdTab{
+    background-color: #a3ffb5;
+}
+.reportTab{
+    background-color: #FFB3A3;
+}
+.setTab{
+    background-color: #cbffa3;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         flex: 0 0 100px;
@@ -28,6 +56,9 @@
 
     .content-area {
         margin-left: 100px;
+    }
+    .tabs{
+        height: 50px;
     }
 }
 
