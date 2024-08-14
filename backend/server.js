@@ -228,9 +228,9 @@ app.put('/api/customers/:id', async (req, res) => {
 });
 
 
-// Update item endpoint
-app.use('/images', express.static(path.join(__dirname, 'images')));
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
+// Update item endpoint
 app.put('/api/items/:id', async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
