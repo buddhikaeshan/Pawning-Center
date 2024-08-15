@@ -48,7 +48,7 @@ form {
 
     .form-group input,
     .form-group select {
-        margin: 0px auto;
+        margin: 4px auto;
     }
     .space-y-4{
         margin-top: 20%;

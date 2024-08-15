@@ -1,20 +1,23 @@
+const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const fs = require('fs'); // Remove if not needed
 const multer = require('multer');
 const path = require('path');
 
 const app = express();
 const port = 5000;
-
+app.use(cors());
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://maleeshapathirana1:1olmMIHQ8xojExRJ@cluster0.yeh5r.mongodb.net/mydatabase')
+mongoose.connect('mongodb+srv://maleeshapathirana1:1olmMIHQ8xojExRJ@cluster0.yeh5r.mongodb.net/mydatabase', {
+    
+    serverSelectionTimeoutMS: 5000
+})
     .then(() => {
         console.log('Database connected successfully');
     })
@@ -50,11 +53,16 @@ const Customer = mongoose.model('Customer', customerSchema);
 const Item = mongoose.model('Item', itemSchema);
 
 // Middleware
-app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' })); // Increase limit as needed
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
-const storage = multer.memoryStorage(); // Use memory storage for storing files in memory
-const upload = multer({ storage });
+
+const storage = multer.memoryStorage(); // Store files in memory
+const upload = multer({ 
+    storage, 
+    limits: { fileSize: 10 * 1024 * 1024 } // Limit file size to 10MB
+});
+
 
 // Middleware for handling image uploads
 app.post('/api/submit', upload.single('image'), async (req, res) => {
@@ -230,6 +238,7 @@ app.put('/api/customers/:id', async (req, res) => {
 
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
 // Update item endpoint
 app.put('/api/items/:id', async (req, res) => {
     const { id } = req.params;
@@ -251,6 +260,23 @@ app.put('/api/items/:id', async (req, res) => {
     }
 });
 
+// Login endpoint
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const admin = await Admin.findOne({ username, password });
+        
+        if (admin) {
+            res.status(200).json({ accountType: admin.accountType });
+        } else {
+            res.status(401).json({ message: 'Invalid username or password' });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 app.post('/api/updateProfile', async (req, res) => {
     const { userId, username, password } = req.body;
@@ -280,4 +306,3 @@ app.post('/api/updateProfile', async (req, res) => {
         res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 });
-

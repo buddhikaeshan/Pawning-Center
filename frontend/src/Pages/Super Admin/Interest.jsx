@@ -8,6 +8,7 @@ const Interest = () => {
     const [monthlyInterestRate, setMonthlyInterestRate] = useState('15');
     const [amountReq, setAmount] = useState('');
     const [monthlyPayment, setMonthlyPayment] = useState(null);
+    const [monthlyInterest, setMonthlyInterest]=useState(null);
     const [totalPayment, setTotalPayment] = useState(null);
     const [totalInterest, setTotalInterest] = useState(null);
     const [error, setError] = useState('')
@@ -29,8 +30,10 @@ const Interest = () => {
         const interest = amount * (numerator / denominator);
         const total = interest * durationMonths;
         const totalInterest = total - amount;
+        const monthlyInterest=  totalInterest/durationMonths;
 
         setMonthlyPayment(interest.toFixed(0));
+        setMonthlyInterest(monthlyInterest.toFixed(0));
         setTotalPayment(total.toFixed(0));
         setTotalInterest(totalInterest.toFixed(0));
     }
@@ -40,6 +43,7 @@ const Interest = () => {
         setAmount("");
         setDuration("");
         setMonthlyPayment(null);
+        setMonthlyInterest(null)
         setTotalInterest(null);
         setTotalPayment(null);
     }
@@ -91,6 +95,9 @@ const Interest = () => {
 
                     <div className="calculater-right">
                         <div className="output">
+                            <div className="output-text">
+                                <p>Monthly Interst: {monthlyInterest !== null && (<span> Rs.{monthlyInterest}</span>)}</p>
+                            </div>
                             <div className="output-text">
                                 <p>Monthly payment: {monthlyPayment !== null && (<span> Rs.{monthlyPayment}</span>)}</p>
                             </div>

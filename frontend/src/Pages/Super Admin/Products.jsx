@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../../components/Sidebar';
 import axios from 'axios';
-import './Products.css'
+import './Products.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const Products = () => {
     const [items, setItems] = useState([]);
@@ -76,33 +80,146 @@ const Products = () => {
 
     const handleSaveChanges = async () => {
         if (selectedItem) {
+            // Calculate the total price before updating
+            const totalPrice = calculateTotalPrice(
+                selectedItem.priceOfItem,
+                selectedItem.interest,
+                selectedItem.duration
+            );
+            const updatedItem = { ...selectedItem, totalPrice };
+    
             try {
-                await axios.put(`http://localhost:5000/api/items/${selectedItem._id}`, selectedItem);
-                setItems(items.map(item => item._id === selectedItem._id ? selectedItem : item));
-                setSelectedItem(null); // Close modal
+                const response = await axios.put(`http://localhost:5000/api/items/${updatedItem._id}`, updatedItem, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                console.log('Item updated:', response.data);
+    
+                // Update local state
+                setItems(items.map(item => item._id === updatedItem._id ? response.data : item));
+    
+                // Close modal
+                setSelectedItem(null);
+                const modal = document.getElementById('updateModal');
+                const modalInstance = window.bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
             } catch (error) {
-                console.error('Error updating item:', error);
+                console.error('Error updating item:', error.response ? error.response.data : error.message);
             }
         }
     };
-
+    
     const handlePaymentReceived = async () => {
         if (selectedItem) {
-            const updatedItem = { ...selectedItem, status: 'Payment Received' };
+            // Calculate the total price before updating
+            const totalPrice = calculateTotalPrice(
+                selectedItem.priceOfItem,
+                selectedItem.interest,
+                selectedItem.duration
+            );
+            const updatedItem = { ...selectedItem, status: 'Payment Received', totalPrice };
+    
             try {
                 await axios.put(`http://localhost:5000/api/items/${selectedItem._id}`, updatedItem);
                 setItems(items.map(item => item._id === selectedItem._id ? updatedItem : item));
-                setSelectedItem(null); // Close modal
+                setSelectedItem(null);
+                const modal = document.getElementById('updateModal');
+                const modalInstance = window.bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+                window.location.reload();
+                // Generate PDF
+                const doc = new jsPDF();
+                const date = new Date().toLocaleString();
+
+                // Title
+                doc.setFontSize(18);
+                doc.text('Payment Receipt', 14, 22);
+
+                // Date
+                doc.setFontSize(12);
+                doc.text(`Date: ${date}`, 14, 30);
+
+                // Table
+                doc.autoTable({
+                    startY: 40,
+                    head: [['Field', 'Value']],
+                    body: [
+                        ['Customer Name', selectedItem.customerName],
+                        ['NIC', selectedItem.nic],
+                        ['Address', selectedItem.address],
+                        ['Phone', selectedItem.phone],
+                        ['Item Category', selectedItem.category],
+                        ['Item Name', selectedItem.itemName],
+                        ['Start Date', selectedItem.startDate ? selectedItem.startDate.slice(0, 10) : 'N/A'],
+                        ['End Date', selectedItem.endDate ? selectedItem.endDate.slice(0, 10) : 'N/A'],
+                        ['Price of Item', selectedItem.priceOfItem],
+                        ['Interest %', selectedItem.interest],
+                        ['Discount', selectedItem.discount],
+                        ['Total Price', selectedItem.totalPrice],
+                    ],
+                    styles: {
+                        halign: 'center',
+                        valign: 'middle',
+                    },
+                    headStyles: {
+                        fillColor: [0, 90, 160],
+                        textColor: [255, 255, 255],
+                        fontSize: 12,
+                    },
+                    bodyStyles: {
+                        fillColor: [245, 245, 245],
+                        fontSize: 11,
+                    },
+                    alternateRowStyles: {
+                        fillColor: [255, 255, 255],
+                    },
+                });
+
+                // Save the PDF
+                doc.save('payment_receipt.pdf');
+
             } catch (error) {
                 console.error('Error updating item status:', error);
             }
         }
     };
 
-    // Function to get the image URL
     const getImageUrl = (itemId) => {
         return `http://localhost:5000/api/items/${itemId}/image`;
     };
+
+    const calculateTotalPrice = (priceOfItem, interest, duration) => {
+        const monthlyInterest = (priceOfItem * interest) / 100;
+        const totalInterest = monthlyInterest * duration;
+        const totalPrice = priceOfItem + totalInterest;
+        return totalPrice;
+    };
+    
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        const updatedValue = name === 'priceOfItem' || name === 'interest' || name === 'duration' ? parseFloat(value) || 0 : value;
+    
+        // Update selected item
+        setSelectedItem(prev => {
+            const updatedItem = { ...prev, [name]: updatedValue };
+    
+            // Recalculate total price
+            const totalPrice = calculateTotalPrice(
+                updatedItem.priceOfItem,
+                updatedItem.interest,
+                updatedItem.duration
+            );
+            return { ...updatedItem, totalPrice };
+        });
+    };    
+
 
     return (
         <div className="container-fluid">
@@ -186,25 +303,30 @@ const Products = () => {
                                         {columnVisibility.interest && <td>{item.interest}</td>}
                                         {columnVisibility.discount && <td>{item.discount}</td>}
                                         {columnVisibility.totalPrice && <td>{item.totalPrice}</td>}
+
                                         {columnVisibility.status && (
                                             <td
-                                                style={{ color: item.status === 'Payment Received' ? 'green' : 'inherit', fontWeight: item.status === 'Payment Received' ? 'bold' : 'normal' }}
+                                                style={{
+                                                    color: item.status === 'Payment Received' ? 'green' : 'red',
+                                                    fontWeight: item.status === 'Payment Received' ? 'bold' : 'bold',
+                                                }}
                                             >
-                                                {item.status}
+                                                {item.status || 'Pending'}
                                             </td>
                                         )}
+
                                         {columnVisibility.actions && (
                                             <td>
                                                 <button
-                                                    className="btnUpdate btn-sm me-2"
-                                                    onClick={() => handleUpdate(item)}
+                                                    className="btn btn-primary me-2"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#updateModal"
+                                                    onClick={() => handleUpdate(item)}
                                                 >
                                                     Update
                                                 </button>
                                                 <button
-                                                    className="btnDelete btn-danger btn-sm"
+                                                    className="btn btn-danger"
                                                     onClick={() => handleDelete(item._id)}
                                                 >
                                                     Delete
@@ -216,150 +338,184 @@ const Products = () => {
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
 
-            {/* Update Modal */}
-            <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="updateModalLabel">Update Item</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <div className="mb-3">
+                    {/* Update Modal */}
+                    <div
+                        className="modal fade"
+                        id="updateModal"
+                        tabIndex="-1"
+                        aria-labelledby="updateModalLabel"
+                        aria-hidden="true"
+                    >
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="updateModalLabel">Update Item</h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="mb-2">
+                                        {selectedItem && (
+                                            <img
+                                                src={getImageUrl(selectedItem._id)}
+                                                alt="Item"
+                                                className="img-fluid"
+                                                style={{ maxWidth: '100%', height: 'auto' }}
+                                            />
+                                        )}
+                                    </div>
+                                    {selectedItem && (
+                                        <form>
+                                            <div className="mb-2">
+                                                <label className="form-label">Customer Name</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-sm"
+                                                    value={selectedItem.customerName}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, customerName: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="mb-2">
+                                                <label className="form-label">NIC</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-sm"
+                                                    value={selectedItem.nic}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, nic: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="mb-2">
+                                                <label className="form-label">Address</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-sm"
+                                                    value={selectedItem.address}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, address: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="mb-2">
+                                                <label className="form-label">Phone</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-sm"
+                                                    value={selectedItem.phone}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, phone: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="mb-2">
+                                                <label className="form-label">Start Date</label>
+                                                <input
+                                                    type="date"
+                                                    className="form-control form-control-sm"
+                                                    value={selectedItem.startDate.slice(0, 10)}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, startDate: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="mb-2">
+                                                <label className="form-label">Item Category</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-sm"
+                                                    value={selectedItem.category}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, category: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="mb-2">
+                                                <label className="form-label">Item Name</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-sm"
+                                                    value={selectedItem.itemName}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, itemName: e.target.value })}
+                                                />
+                                            </div>
 
-                                {selectedItem && (
-                                    <img
-                                        src={getImageUrl(selectedItem._id)}
-                                        alt="Item"
-                                        className="img-fluid"
-                                        style={{ maxWidth: '100%', height: 'auto' }}
-                                    />
-                                )}
+                                            <div className="mb-2">
+                                                <label className="form-label">End Date</label>
+                                                <input
+                                                    type="date"
+                                                    className="form-control form-control-sm"
+                                                    value={selectedItem.endDate ? selectedItem.endDate.slice(0, 10) : ''}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, endDate: e.target.value })}
+                                                />
+                                            </div><div className="mb-2">
+                                                <label className="form-label">Price of Item</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control form-control-sm"
+                                                    name="priceOfItem"
+                                                    value={selectedItem.priceOfItem}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            <div className="mb-2">
+                                                <label className="form-label">Interest (%)</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control form-control-sm"
+                                                    name="interest"
+                                                    value={selectedItem.interest}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            <div className="mb-2">
+                                                <label className="form-label">Duration (Months)</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control form-control-sm"
+                                                    name="duration"
+                                                    value={selectedItem.duration || ''}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            {/* <div className="mb-2">
+                                                <label className="form-label">Discount</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control form-control-sm"
+                                                    name="discount"
+                                                    value={selectedItem.discount}
+                                                    onChange={handleChange}
+                                                />
+                                            </div> */}
+                                            <div className="mb-2">
+                                                <label className="form-label">Total Price</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control form-control-sm"
+                                                    name="totalPrice"
+                                                    value={selectedItem.totalPrice}
+                                                    onChange={handleChange}
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </form>
+                                    )}
+                                </div>
+                                <div className="modal-footer">
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        data-bs-dismiss="modal"
+                                    >
+                                        Close
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        onClick={handleSaveChanges}
+                                    >
+                                        Save Changes
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-success"
+                                        onClick={handlePaymentReceived}
+                                    >
+                                        Payment Received
+                                    </button>
+                                </div>
                             </div>
-                            <div className="mb-3">
-                                <label className="form-label">Customer Name</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={selectedItem?.customerName || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, customerName: e.target.value })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">NIC</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={selectedItem?.nic || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, nic: e.target.value })}
-                                />
-                            </div>  <div className="mb-3">
-                                <label className="form-label">Address</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={selectedItem?.address || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, address: e.target.value })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Phone</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={selectedItem?.phone || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, phone: e.target.value })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Item Category</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={selectedItem?.category || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, category: e.target.value })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Item Name</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={selectedItem?.itemName || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, itemName: e.target.value })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Price of Item</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    value={selectedItem?.priceOfItem || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, priceOfItem: e.target.value })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Interest %</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    value={selectedItem?.interest || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, interest: e.target.value })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Discount</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    value={selectedItem?.discount || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, discount: e.target.value })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Total Price</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    value={selectedItem?.totalPrice || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, totalPrice: e.target.value })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Status</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={selectedItem?.status || ''}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, status: e.target.value })}
-                                />
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                            >
-                                Close
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-success"
-                                onClick={handlePaymentReceived}
-                            >
-                                Payment Received
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={handleSaveChanges}
-                            >
-                                Save Changes
-                            </button>
                         </div>
                     </div>
                 </div>

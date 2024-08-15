@@ -6,8 +6,7 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
-
-input[type=number] {
+.form-group input {
     color: #222;
     background-color: #fff;
     box-shadow: 1px 3px 10px 1px rgba(0, 0, 0, 0.200);
@@ -20,7 +19,6 @@ input[type=number] {
     margin: 10px;
     outline: none;
 }
-
 
 form {
     display: inline-block;
@@ -62,7 +60,7 @@ p {
 .output-text {
     color: #222;
     font-size: max(1vw, 16px);
-    margin: 10px;
+    margin-right: 10px;
 }
 
 .output-text span {
@@ -89,12 +87,12 @@ p {
         font-size: 20px;
     }
 input[type=number] {
-    margin: 0px;
+    margin: 5px;
 }
 
 }
 
-@media (max-width: 576px) {
+@media (max-width: 580px) {
     .form-group {
         flex-direction: column;
     }
@@ -106,6 +104,11 @@ input[type=number] {
         margin-bottom: 0.5rem;
         margin-right: 0;
     }
+    .output-text p{
+        font-size: 14px;
+        margin: 3px;
+        text-align: left;
+    }
 }
 
 @media (max-width: 490px) {
@@ -113,9 +116,6 @@ input[type=number] {
         padding:6px 16px;
         width: 100%;
     }
-
-    
-
     .btn {
         left: 4%;
     }

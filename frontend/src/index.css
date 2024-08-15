@@ -3,7 +3,7 @@
 body {
   margin: 0;
   font-family: "Lato", sans-serif;
-    font-weight: 700;
+  font-weight: 700;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,7 +19,7 @@ code {
   margin-top: 10px;
 }
 
-.btnall{
+.btnall {
   width: max(10vw, 170px);
   font-family: system-ui, sans-serif;
   font-size: 15px;
@@ -31,6 +31,7 @@ code {
   cursor: pointer;
   transition: 0.5s;
 }
+
 .btnSave {
   background-color: #6de56d;
 }
@@ -46,23 +47,38 @@ code {
 .btnReset:hover {
   background-color: #ffa0a0;
 }
-.btnUpdate{
+
+.btnUpdate {
   background-color: #00d107;
   border: none;
   color: #fff;
-  padding:2px 5px;
+  padding: 2px 5px;
   border-radius: 5px;
 }
-.btnDelete{
+
+.btnDelete {
   background-color: #d10000;
   border: none;
   color: #fff;
-  padding:2px 5px;
+  padding: 2px 5px;
   border-radius: 5px;
 }
+
 @media (max-width: 768px) {
-  .btnall{
+  .btnall {
     font-size: 12px;
-    width:110px;
+    width: 110px;
+  }
+
+  input[type=number] {
+    margin: 5px;
+  }
+
+}
+@media (max-width: 590px) {
+  input {
+      padding:8px 16px;
+      width: 100%;
+      margin: 4px;
   }
 }
