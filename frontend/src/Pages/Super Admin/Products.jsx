@@ -107,6 +107,7 @@ const Products = () => {
                 if (modalInstance) {
                     modalInstance.hide();
                 }
+                window.location.reload();
             } catch (error) {
                 console.error('Error updating item:', error.response ? error.response.data : error.message);
             }
