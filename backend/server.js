@@ -279,17 +279,26 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/updateProfile', async (req, res) => {
-    const { userId, username, password } = req.body;
+    const token = req.headers.authorization?.split(' ')[1]; // Extract the token from the Authorization header
+    const { username, password } = req.body;
+
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized. No token provided.' });
+    }
 
     if (!username || !password) {
         return res.status(400).json({ message: 'Username and password are required.' });
     }
 
     try {
+        // Verify the token and get the user ID from the payload
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id; // Assuming the user ID is stored in the JWT payload as 'id'
+
         // Hash the new password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Find the admin by ID and update the username and password
+        // Find the admin by ID (from token) and update the username and password
         const admin = await Admin.findByIdAndUpdate(
             userId,
             { username, password: hashedPassword },
@@ -302,6 +311,10 @@ app.post('/api/updateProfile', async (req, res) => {
 
         res.status(200).json({ message: 'Profile updated successfully!', admin });
     } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Invalid token.' });
+        }
+
         console.error('Error updating profile:', error);
         res.status(500).json({ message: 'Server error. Please try again later.' });
     }
