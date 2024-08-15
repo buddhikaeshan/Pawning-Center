@@ -56,7 +56,7 @@ const DashboardAdmin = () => {
                             </div> */}
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
-                                    to="/SettingsAdmin" 
+                                    to="/ProfileAdmin" 
                                     className="p-3 tabs setTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Account Settings
