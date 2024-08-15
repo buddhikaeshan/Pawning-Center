@@ -250,3 +250,34 @@ app.put('/api/items/:id', async (req, res) => {
         res.status(500).json({ message: 'Error updating item' });
     }
 });
+
+
+app.post('/api/updateProfile', async (req, res) => {
+    const { userId, username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ message: 'Username and password are required.' });
+    }
+
+    try {
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Find the admin by ID and update the username and password
+        const admin = await Admin.findByIdAndUpdate(
+            userId,
+            { username, password: hashedPassword },
+            { new: true } // Return the updated document
+        );
+
+        if (!admin) {
+            return res.status(404).json({ message: 'Admin not found.' });
+        }
+
+        res.status(200).json({ message: 'Profile updated successfully!', admin });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+});
+

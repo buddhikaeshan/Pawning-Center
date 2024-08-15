@@ -6,6 +6,7 @@ import { useState } from "react";
 
 function Profile() {
   const [formData, setFormData] = useState({
+    name: "", 
     password: "",
     cpassword: "",
   });
@@ -18,6 +19,7 @@ function Profile() {
   });
 
   const [errors, setErrors] = useState({
+    name: "", 
     password: "",
     cpassword: "",
   });
@@ -51,8 +53,13 @@ function Profile() {
   };
 
   const validate = () => {
-    let tempErrors = { password: "", cpassword: "" };
+    let tempErrors = { name: "", password: "", cpassword: "" };
     let isValid = true;
+
+    if (!formData.name) {
+      tempErrors.name = "Name is required"; 
+      isValid = false;
+    }
 
     if (!formData.password) {
       tempErrors.password = "Password is required";
@@ -85,12 +92,36 @@ function Profile() {
     return isValid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      setMessage("Form submitted successfully!");
-      setAlertType("alert alert-success");
-      setShowAlert(true);
+      try {
+        const response = await fetch("/api/updateProfile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: "USER_ID_HERE", // Replace with actual user ID
+            name: formData.name,
+            password: formData.password,
+          }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setMessage(data.message);
+          setAlertType("alert alert-success");
+        } else {
+          setMessage(data.message);
+          setAlertType("alert alert-danger");
+        }
+        setShowAlert(true);
+      } catch (error) {
+        setMessage("An error occurred. Please try again.");
+        setAlertType("alert alert-danger");
+        setShowAlert(true);
+      }
     } else {
       setMessage("Please correct the errors and try again.");
       setAlertType("alert alert-danger");
@@ -109,7 +140,7 @@ function Profile() {
   return (
     <div className="container-fluid">
       <div className="row flex-nowrap">
-        <Sidebar/>
+        <Sidebar />
         <div className="col-md-12">
           <form onSubmit={handleSubmit}>
             <fieldset>
@@ -118,9 +149,19 @@ function Profile() {
               <div className="row">
                 <div className="col-md-12">
                   <label className="form-label mt-4">Name</label>
-                  <input type="text" className="form-control" />
-                  </div>
+                  <input
+                    type="text"
+                    id="name"
+                    className="form-control"
+                    placeholder="Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                  {errors.name && (
+                    <div className="text-danger mt-2">{errors.name}</div>
+                  )}
                 </div>
+              </div>
 
               <div className="row">
                 <div className="col-md-12">
@@ -129,7 +170,7 @@ function Profile() {
                     <input
                       type={passwordObscure ? "password" : "text"}
                       id="password"
-                      className="form-control "
+                      className="form-control"
                       placeholder="Password"
                       value={formData.password}
                       onChange={handleChange}
