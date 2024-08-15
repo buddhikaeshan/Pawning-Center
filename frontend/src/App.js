@@ -9,6 +9,10 @@ import Interest from "./Pages/Super Admin/Interest";
 import Profile from "./Pages/Super Admin/Profile";
 import Login from "./Pages/Login";
 import PdfView from "./Pages/Super Admin/PdfView";
+import DashboardAdmin from "./Pages/Admin/DashboardAdmin";
+import CustomersAdmin from "./Pages/Admin/CustomersAdmin";
+import ProductsAdmin from "./Pages/Admin/ProductsAdmin";
+import InterestAdmin from "./Pages/Admin/InterestAdmin";
 
 
 function App() {
@@ -28,6 +32,13 @@ function App() {
 
           <Route path="/Profile" element={<Profile />} />
           <Route path="/View" element={<PdfView />} />
+
+
+          <Route path="/DashboardAdmin" element={<DashboardAdmin />} />
+          <Route path="/CustomersAdmin" element={<CustomersAdmin />} />
+          <Route path="/ProductsAdmin" element={<ProductsAdmin />} />
+          <Route path="/InterestAdmin" element={<InterestAdmin />} />
+
         </Routes>
       </BrowserRouter>
     </div>
