@@ -16,7 +16,7 @@ const DashboardAdmin = () => {
                         <div className="row">
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
-                                    to="/CustomersAdmins" 
+                                    to="/CustomersAdmin" 
                                     className="p-3 tabs cusTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Customer Details
@@ -24,7 +24,7 @@ const DashboardAdmin = () => {
                             </div>
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
-                                    to="/InterestAdmins" 
+                                    to="/InterestAdmin" 
                                     className="p-3 tabs calTab  d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Calculate Interest
@@ -32,7 +32,7 @@ const DashboardAdmin = () => {
                             </div>
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
-                                    to="/ProductsAdmins" 
+                                    to="/ProductsAdmin" 
                                     className="p-3 tabs addTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Add Products/Items
@@ -56,7 +56,7 @@ const DashboardAdmin = () => {
                             </div> */}
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
-                                    to="/SettingsAdmins" 
+                                    to="/SettingsAdmin" 
                                     className="p-3 tabs setTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Account Settings
