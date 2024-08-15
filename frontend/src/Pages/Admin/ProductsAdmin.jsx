@@ -327,8 +327,8 @@ const ProductsAdmin = () => {
                                                 >
                                                     Update
                                                 </button>
-                                                <button
-                                                    className="btn btn-danger"
+                                                <button 
+                                                    className="btn btn-secondary disabled"
                                                     onClick={() => handleDelete(item._id)}
                                                 >
                                                     Delete

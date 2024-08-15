@@ -13,6 +13,7 @@ import DashboardAdmin from "./Pages/Admin/DashboardAdmin";
 import CustomersAdmin from "./Pages/Admin/CustomersAdmin";
 import ProductsAdmin from "./Pages/Admin/ProductsAdmin";
 import InterestAdmin from "./Pages/Admin/InterestAdmin";
+import ProfileAdmin from "./Pages/Admin/ProfileAdmin";
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/CustomersAdmin" element={<CustomersAdmin />} />
           <Route path="/ProductsAdmin" element={<ProductsAdmin />} />
           <Route path="/InterestAdmin" element={<InterestAdmin />} />
+          <Route path="/ProfileAdmin" element={<ProfileAdmin />} />
 
         </Routes>
       </BrowserRouter>

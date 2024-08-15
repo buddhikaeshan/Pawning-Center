@@ -106,7 +106,7 @@ const CustomersAdmin = () => {
                                         <td>{customer.address}</td>
                                         <td>{customer.phone}</td>
                                         <td>
-                                            <button
+                                            <button 
                                                 className="btnUpdate btn-sm me-2"
                                                 onClick={() => {
                                                     setSelectedCustomer(customer);
@@ -115,8 +115,8 @@ const CustomersAdmin = () => {
                                             >
                                                 Update
                                             </button>
-                                            <button
-                                                className="btnDelete btn-danger btn-sm"
+                                            <button 
+                                                className="btnDel btn-sm " disabled
                                                 onClick={() => handleDelete(customer._id)}
                                             >
                                                 Delete
