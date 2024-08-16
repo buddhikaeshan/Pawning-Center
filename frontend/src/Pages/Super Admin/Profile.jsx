@@ -141,18 +141,18 @@ function Profile() {
     <div className="container-fluid">
       <div className="row flex-nowrap">
         <Sidebar />
-        <div className="col-md-12">
-          <form onSubmit={handleSubmit}>
+        <div className="col py-3 content-area">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <fieldset>
-              <legend>Profile</legend>
+              <legend className="caption">Profile</legend>
 
-              <div className="row">
-                <div className="col-md-12">
-                  <label className="form-label mt-4">Name</label>
+              <div className="">
+                <div className="form-group">
+                  <label className="">Name</label>
                   <input
                     type="text"
                     id="name"
-                    className="form-control"
+                    className="text-box"
                     placeholder="Name"
                     value={formData.name}
                     onChange={handleChange}
@@ -163,14 +163,13 @@ function Profile() {
                 </div>
               </div>
 
-              <div className="row">
-                <div className="col-md-12">
-                  <label className="form-label mt-4">Password</label>
-                  <div className="input-wrapper">
+              <div className="">                  
+                  <div className="form-group">
+                    <label className="">Password</label>
                     <input
                       type={passwordObscure ? "password" : "text"}
                       id="password"
-                      className="form-control"
+                      className="text-box"
                       placeholder="Password"
                       value={formData.password}
                       onChange={handleChange}
@@ -229,17 +228,15 @@ function Profile() {
                       </li>
                     </ul>
                   </div>
-                </div>
               </div>
 
-              <div className="row">
-                <div className="col-md-12">
-                  <label className="form-label mt-4">Confirm Password</label>
-                  <div className="input-wrapper">
+              <div className="">
+                  <div className="form-group">
+                    <label className="">Confirm Password</label>
                     <input
                       type={confirmPasswordObscure ? "password" : "text"}
                       id="cpassword"
-                      className="form-control"
+                      className="text-box"
                       placeholder="Confirm Password"
                       value={formData.cpassword}
                       onChange={handleChange}
@@ -258,7 +255,6 @@ function Profile() {
                   {errors.cpassword && (
                     <div className="text-danger mt-2">{errors.cpassword}</div>
                   )}
-                </div>
               </div>
 
               {showAlert && (
@@ -267,13 +263,12 @@ function Profile() {
                 </div>
               )}
 
-              <div className="row mt-4">
-                <div className="col-md-6">
-                  <button className="btnall" type="submit">
+                <div className="col-md- mt-5">
+                  <button className="btnall btnSave" type="submit">
                     Save Changes
                   </button>
                 </div>
-              </div>
+              
             </fieldset>
           </form>
         </div>

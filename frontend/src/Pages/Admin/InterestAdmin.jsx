@@ -1,14 +1,14 @@
 import React from 'react';
+import Sidebar from '../../components/SidebarAdmin';
 import './Interest.css'
 import { useState } from 'react';
-import SidebarAdmin from '../../components/SidebarAdmin';
 
-const InterestAdmin = () => {
+const Interest = () => {
     const [duration, setDuration] = useState('');
     const [monthlyInterestRate, setMonthlyInterestRate] = useState('15');
     const [amountReq, setAmount] = useState('');
     const [monthlyPayment, setMonthlyPayment] = useState(null);
-    const [monthlyInterest, setMonthlyInterest]=useState(null);
+    const [monthlyInterest, setMonthlyInterest] = useState(null);
     const [totalPayment, setTotalPayment] = useState(null);
     const [totalInterest, setTotalInterest] = useState(null);
     const [error, setError] = useState('')
@@ -16,26 +16,24 @@ const InterestAdmin = () => {
     const calculater = () => {
         setError('');
         const durationMonths = parseFloat(duration);
-        const rate = parseFloat(monthlyInterestRate) / 100;
+        const rate = parseFloat(monthlyInterestRate);
         const amount = parseFloat(amountReq);
 
         if (isNaN(durationMonths) || durationMonths <= 0 || isNaN(rate) || rate <= 0 || isNaN(amountReq) || amountReq <= 0) {
             setError('Please Enter Valid Value');
             return
         }
+        const monthlyInterest = (amount * rate) / 100;
+        const monthlyPayment= monthlyInterest+(amount/durationMonths);
+        const totalInterest = monthlyInterest* durationMonths;
+        const total = amount+totalInterest ;
+        
 
-        const numerator = rate * Math.pow(1 + rate, durationMonths);
-        const denominator = Math.pow(1 + rate, durationMonths) - 1;
 
-        const interest = amount * (numerator / denominator);
-        const total = interest * durationMonths;
-        const totalInterest = total - amount;
-        const monthlyInterest=  totalInterest/durationMonths;
-
-        setMonthlyPayment(interest.toFixed(0));
-        setMonthlyInterest(monthlyInterest.toFixed(0));
-        setTotalPayment(total.toFixed(0));
-        setTotalInterest(totalInterest.toFixed(0));
+        setMonthlyInterest(monthlyInterest);
+        setMonthlyPayment(monthlyPayment);
+        setTotalPayment(total);
+        setTotalInterest(totalInterest);
     }
 
     const resetBtn = () => {
@@ -50,7 +48,7 @@ const InterestAdmin = () => {
     return (
         <div className="container-fluid">
             <div className="row flex-nowrap">
-                <SidebarAdmin />
+                <Sidebar />
 
                 <div className="col py-3 content-area">
                     <h1 className="caption">Calculate Interest</h1>
@@ -99,15 +97,15 @@ const InterestAdmin = () => {
                                 <p>Monthly Interst: {monthlyInterest !== null && (<span> Rs.{monthlyInterest}</span>)}</p>
                             </div>
                             <div className="output-text">
-                                <p>Monthly payment: {monthlyPayment !== null && (<span> Rs.{monthlyPayment}</span>)}</p>
+                                <p>Monthly payment: {monthlyInterest !== null && (<span> Rs.{monthlyPayment}</span>)}</p>
                             </div>
                             <div className="output-text">
                                 <p>Total Interest Paid:
-                                    {monthlyPayment !== null && (<span> Rs. {totalInterest}</span>)}</p>
+                                    {monthlyInterest !== null && (<span> Rs. {totalInterest}</span>)}</p>
                             </div>
                             <div className="output-text">
                                 <p>Total Payment:
-                                    {monthlyPayment !== null && (<span> Rs. {totalPayment}</span>)}</p>
+                                    {monthlyInterest !== null && (<span> Rs. {totalPayment}</span>)}</p>
                             </div>
                             <div className="error">
                                 <p>{error && <p>{error}</p>}</p>
@@ -126,4 +124,4 @@ const InterestAdmin = () => {
     );
 };
 
-export default InterestAdmin;
+export default Interest;

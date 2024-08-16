@@ -53,10 +53,6 @@
     .sidebar {
         flex: 0 0 100px;
     }
-
-    .content-area {
-        margin-left: 100px;
-    }
     .tabs{
         height: 50px;
     }

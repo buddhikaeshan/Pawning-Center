@@ -87,19 +87,19 @@ const Products = () => {
                 selectedItem.duration
             );
             const updatedItem = { ...selectedItem, totalPrice };
-    
+
             try {
                 const response = await axios.put(`http://localhost:5000/api/items/${updatedItem._id}`, updatedItem, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
-    
+
                 console.log('Item updated:', response.data);
-    
+
                 // Update local state
                 setItems(items.map(item => item._id === updatedItem._id ? response.data : item));
-    
+
                 // Close modal
                 setSelectedItem(null);
                 const modal = document.getElementById('updateModal');
@@ -113,7 +113,7 @@ const Products = () => {
             }
         }
     };
-    
+
     const handlePaymentReceived = async () => {
         if (selectedItem) {
             // Calculate the total price before updating
@@ -123,7 +123,7 @@ const Products = () => {
                 selectedItem.duration
             );
             const updatedItem = { ...selectedItem, status: 'Payment Received', totalPrice };
-    
+
             try {
                 await axios.put(`http://localhost:5000/api/items/${selectedItem._id}`, updatedItem);
                 setItems(items.map(item => item._id === selectedItem._id ? updatedItem : item));
@@ -201,16 +201,16 @@ const Products = () => {
         const totalPrice = priceOfItem + totalInterest;
         return totalPrice;
     };
-    
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         const updatedValue = name === 'priceOfItem' || name === 'interest' || name === 'duration' ? parseFloat(value) || 0 : value;
-    
+
         // Update selected item
         setSelectedItem(prev => {
             const updatedItem = { ...prev, [name]: updatedValue };
-    
+
             // Recalculate total price
             const totalPrice = calculateTotalPrice(
                 updatedItem.priceOfItem,
@@ -219,7 +219,7 @@ const Products = () => {
             );
             return { ...updatedItem, totalPrice };
         });
-    };    
+    };
 
 
     return (
@@ -355,18 +355,17 @@ const Products = () => {
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div className="modal-body">
-                                    <div className="mb-2">
-                                        {selectedItem && (
-                                            <img
-                                                src={getImageUrl(selectedItem._id)}
-                                                alt="Item"
-                                                className="img-fluid"
-                                                style={{ maxWidth: '100%', height: 'auto' }}
-                                            />
-                                        )}
-                                    </div>
                                     {selectedItem && (
                                         <form>
+                                            <div className="mb-2">
+                                                <img
+                                                    src={getImageUrl(selectedItem._id)}
+                                                    alt="Item"
+                                                    className="img-fluid"
+                                                    style={{ maxWidth: '100%', height: 'auto' }}
+                                                />
+                                            </div>
+
                                             <div className="mb-2">
                                                 <label className="form-label">Customer Name</label>
                                                 <input
