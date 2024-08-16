@@ -1,8 +1,22 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate  } from 'react-router-dom';
 import './Sidebar.css';
 
 const Sidebar = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await fetch('http://localhost:5000/api/logout', {
+                method: 'POST',
+                credentials: 'include',
+            });
+            navigate('/Login');
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+    
     return (
         <div className="sidebar bg-dark text-white">
             <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100 center">
@@ -50,7 +64,7 @@ const Sidebar = () => {
                     </li> */}
                     <hr />
                     <li>
-                        <NavLink to="/" className="logout">
+                        <NavLink onClick={handleLogout} className="logout">
                             <span className="">Log out</span>
                         </NavLink>
                     </li>

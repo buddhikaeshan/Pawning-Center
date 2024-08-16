@@ -5,13 +5,27 @@ const bodyParser = require('body-parser');
 const fs = require('fs'); // Remove if not needed
 const multer = require('multer');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs'); 
 
 const app = express();
 const port = 5000;
-app.use(cors());
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+
+const corsOptions = {
+    origin: 'http://localhost:3000', // Allow only your frontend origin
+    credentials: true, // Allow credentials (cookies, etc.)
+};
+
+app.use(cors(corsOptions));
+app.use(cookieParser());
+
+// Middleware
+app.use(bodyParser.json({ limit: '10mb' })); // Increase limit as needed
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+
+
+
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://maleeshapathirana1:1olmMIHQ8xojExRJ@cluster0.yeh5r.mongodb.net/mydatabase', {
@@ -51,10 +65,6 @@ const itemSchema = new mongoose.Schema({
 
 const Customer = mongoose.model('Customer', customerSchema);
 const Item = mongoose.model('Item', itemSchema);
-
-// Middleware
-app.use(bodyParser.json({ limit: '10mb' })); // Increase limit as needed
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 
 const storage = multer.memoryStorage(); // Store files in memory
@@ -137,6 +147,7 @@ app.get('/api/items', async (req, res) => {
         res.status(500).json({ message: 'Error fetching items' });
     }
 });
+
 app.get('/api/items/:id/image', async (req, res) => {
     const { id } = req.params;
     try {
@@ -153,6 +164,7 @@ app.get('/api/items/:id/image', async (req, res) => {
         res.status(500).json({ message: 'Error fetching item image' });
     }
 });
+
 
 const adminSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
@@ -236,7 +248,6 @@ app.put('/api/customers/:id', async (req, res) => {
 });
 
 
-
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Update item endpoint
@@ -260,14 +271,39 @@ app.put('/api/items/:id', async (req, res) => {
     }
 });
 
-// Login endpoint
+
+const SECRET_KEY = 'NMSOLUTION';
+
+// Authentication middleware
+const authenticateToken = (req, res, next) => {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(403).json({ message: 'Access denied, no token provided' });
+    }
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+        req.user = user;
+        next();
+    });
+};
+
+// Login route
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
         const admin = await Admin.findOne({ username, password });
-        
+
         if (admin) {
+            // Create JWT
+            const token = jwt.sign({ id: admin._id, accountType: admin.accountType }, SECRET_KEY, { expiresIn: '1h' });
+
+            // Set JWT as a cookie
+            res.cookie('token', token, { httpOnly: true });
             res.status(200).json({ accountType: admin.accountType });
         } else {
             res.status(401).json({ message: 'Invalid username or password' });
@@ -278,44 +314,59 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-app.post('/api/updateProfile', async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1]; // Extract the token from the Authorization header
-    const { username, password } = req.body;
+// app.post('/api/updateProfile', async (req, res) => {
+//     const token = req.headers.authorization?.split(' ')[1]; // Extract the token from the Authorization header
+//     const { username, password } = req.body;
 
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized. No token provided.' });
-    }
+//     if (!token) {
+//         return res.status(401).json({ message: 'Unauthorized. No token provided.' });
+//     }
 
-    if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required.' });
-    }
+//     if (!username || !password) {
+//         return res.status(400).json({ message: 'Username and password are required.' });
+//     }
 
-    try {
-        // Verify the token and get the user ID from the payload
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.id; // Assuming the user ID is stored in the JWT payload as 'id'
+//     try {
+//         // Verify the token and get the user ID from the payload
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//         const userId = decoded.id; // Assuming the user ID is stored in the JWT payload as 'id'
 
-        // Hash the new password
-        const hashedPassword = await bcrypt.hash(password, 10);
+//         // Hash the new password
+//         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Find the admin by ID (from token) and update the username and password
-        const admin = await Admin.findByIdAndUpdate(
-            userId,
-            { username, password: hashedPassword },
-            { new: true } // Return the updated document
-        );
+//         // Find the admin by ID (from token) and update the username and password
+//         const admin = await Admin.findByIdAndUpdate(
+//             userId,
+//             { username, password: hashedPassword },
+//             { new: true } // Return the updated document
+//         );
 
-        if (!admin) {
-            return res.status(404).json({ message: 'Admin not found.' });
-        }
+//         if (!admin) {
+//             return res.status(404).json({ message: 'Admin not found.' });
+//         }
 
-        res.status(200).json({ message: 'Profile updated successfully!', admin });
-    } catch (error) {
-        if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({ message: 'Invalid token.' });
-        }
+//         res.status(200).json({ message: 'Profile updated successfully!', admin });
+//     } catch (error) {
+//         if (error.name === 'JsonWebTokenError') {
+//             return res.status(401).json({ message: 'Invalid token.' });
+//         }
 
-        console.error('Error updating profile:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
+//         console.error('Error updating profile:', error);
+//         res.status(500).json({ message: 'Server error. Please try again later.' });
+//     }
+// });
+
+// Protected route example
+app.get('/api/protected', authenticateToken, (req, res) => {
+    res.status(200).json({ message: 'You have accessed a protected route!' });
+});
+
+// Logout route
+app.post('/api/logout', (req, res) => {
+    res.clearCookie('token');
+    res.status(200).json({ message: 'Logged out successfully' });
+});
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });

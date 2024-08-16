@@ -10,7 +10,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form submission
 
     try {
       const response = await fetch('http://localhost:5000/api/login', {
@@ -18,25 +18,24 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // This ensures cookies are sent with the request
         body: JSON.stringify({ username, password }),
       });
 
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
       const data = await response.json();
 
-      if (response.ok) {
-        if (data.accountType === 'superadmin') {
-          navigate('/Dashboard');
-        } else if (data.accountType === 'admin') {
-          navigate('/DashboardAdmin');
-        } else {
-          alert('Unknown account type');
-        }
-      } else {
-        alert('Login failed: ' + data.message);
+      // Navigate based on accountType
+      if (data.accountType === 'superadmin') {
+        navigate('/Dashboard');
+      } else if (data.accountType === 'admin') {
+        navigate('/DashboardAdmin');
       }
     } catch (error) {
       console.error('Error during login:', error);
-      alert('An error occurred during login');
     }
   };
 

@@ -15,6 +15,7 @@ import ProductsAdmin from "./Pages/Admin/ProductsAdmin";
 import InterestAdmin from "./Pages/Admin/InterestAdmin";
 import ProfileAdmin from "./Pages/Admin/ProfileAdmin";
 
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -24,22 +25,24 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/Login" element={<Login />} />
 
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/Customers" element={<Customers />} />
-          <Route path="/Products" element={<Products />} />
+          <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          
+
+          <Route path="/Customers" element={<ProtectedRoute><Customers /></ProtectedRoute>} />
+          <Route path="/Products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
           <Route path="/Form" element={<Form />} />
-          <Route path="/CreateAdmin" element={<CreateAdmin />} />
-          <Route path="/Interest" element={<Interest />} />
+          <Route path="/CreateAdmin" element={<ProtectedRoute><CreateAdmin /></ProtectedRoute>} />
+          <Route path="/Interest" element={<ProtectedRoute><Interest /></ProtectedRoute>} />
 
-          <Route path="/Profile" element={<Profile />} />
-          <Route path="/View" element={<PdfView />} />
+          <Route path="/Profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/View" element={<ProtectedRoute><PdfView /></ProtectedRoute>} />
 
 
-          <Route path="/DashboardAdmin" element={<DashboardAdmin />} />
-          <Route path="/CustomersAdmin" element={<CustomersAdmin />} />
-          <Route path="/ProductsAdmin" element={<ProductsAdmin />} />
-          <Route path="/InterestAdmin" element={<InterestAdmin />} />
-          <Route path="/ProfileAdmin" element={<ProfileAdmin />} />
+          <Route path="/DashboardAdmin" element={ <ProtectedRoute> <DashboardAdmin /> </ProtectedRoute> } />
+          <Route path="/CustomersAdmin" element={ <ProtectedRoute> <CustomersAdmin /> </ProtectedRoute> } />
+          <Route path="/ProductsAdmin" element={ <ProtectedRoute> <ProductsAdmin /> </ProtectedRoute> } />
+          <Route path="/InterestAdmin" element={ <ProtectedRoute> <InterestAdmin /> </ProtectedRoute> } />
+          <Route path="/ProfileAdmin" element={ <ProtectedRoute> <ProfileAdmin /> </ProtectedRoute> } />
 
         </Routes>
       </BrowserRouter>
