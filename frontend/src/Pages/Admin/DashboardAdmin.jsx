@@ -45,15 +45,15 @@ const DashboardAdmin = () => {
                                 >
                                     Create Admins
                                 </NavLink>
-                            </div> */}
-                            {/* <div className="col-md-4 mb-3" id="dMain">
+                            </div>
+                            <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/Report" 
                                     className="p-3 tabs reportTab d-flex align-items-center justify-content-center text-decoration-none"
                                 >
                                     Monthly Report
                                 </NavLink>
-                            </div> */}
+                            </div> 
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/ProfileAdmin" 
@@ -61,7 +61,7 @@ const DashboardAdmin = () => {
                                 >
                                     Account Settings
                                 </NavLink>
-                            </div>
+                            </div>*/}
                         </div>
                     </main>
                 </div>

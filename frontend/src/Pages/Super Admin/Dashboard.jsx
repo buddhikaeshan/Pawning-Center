@@ -52,7 +52,7 @@ const Dashboard = () => {
                                 >
                                     Monthly Report
                                 </NavLink>
-                            </div> */}
+                            </div> 
                             <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/Settings" 
@@ -60,7 +60,7 @@ const Dashboard = () => {
                                 >
                                     Account Settings
                                 </NavLink>
-                            </div>
+                            </div>*/}
                         </div>
                     </main>
                 </div>
