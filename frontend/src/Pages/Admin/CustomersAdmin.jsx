@@ -37,7 +37,7 @@ const CustomersAdmin = () => {
         if (window.confirm('Are you sure you want to delete this customer?')) {
             try {
                 await axios.delete(`http://localhost:5000/api/customers/${id}`);
-                setCustomers(customers.filter(customer => customer._id !== id)); // Update local state
+                setCustomers(customers.filter(customer => customer.id !== id)); // Update local state
             } catch (error) {
                 console.error('Error deleting customer:', error);
             }
@@ -48,9 +48,9 @@ const CustomersAdmin = () => {
     const handleUpdate = async () => {
         if (selectedCustomer) {
             try {
-                await axios.put(`http://localhost:5000/api/customers/${selectedCustomer._id}`, selectedCustomer);
+                await axios.put(`http://localhost:5000/api/customers/${selectedCustomer.id}`, selectedCustomer);
                 setCustomers(customers.map(customer => 
-                    customer._id === selectedCustomer._id ? selectedCustomer : customer
+                    customer.id === selectedCustomer.id ? selectedCustomer : customer
                 ));
                 setShowModal(false); // Close modal after update
             } catch (error) {
@@ -99,7 +99,7 @@ const CustomersAdmin = () => {
                             </thead>
                             <tbody>
                                 {filteredCustomers.map((customer, index) => (
-                                    <tr key={customer._id}>
+                                    <tr key={customer.id}>
                                         <td>{index + 1}</td>
                                         <td>{customer.customerName}</td>
                                         <td>{customer.nic}</td>
@@ -117,7 +117,7 @@ const CustomersAdmin = () => {
                                             </button>
                                             <button 
                                                 className="btnDel btn-sm " disabled
-                                                onClick={() => handleDelete(customer._id)}
+                                                onClick={() => handleDelete(customer.id)}
                                             >
                                                 Delete
                                             </button>

@@ -26,6 +26,9 @@ const connection = mysql.createConnection({
     host: 'sql.freedb.tech',
     user: 'freedb_nmtest',
     password: 'F6keBjVju?Pr&gz',
+    // host: 'localhost',
+    // user: 'root',
+    // password: '',
     database: 'freedb_delmamountview'
 });
 

@@ -11,23 +11,7 @@ const Products = () => {
     const [items, setItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedItem, setSelectedItem] = useState(null); // State to track selected item
-    const [columnVisibility, setColumnVisibility] = useState({
-        id: false,
-        name: true,
-        nic: true,
-        address: false,
-        phone: false,
-        startDate: true,
-        category: false,
-        itemName: true,
-        priceOfItem: true,
-        endDate: true,
-        interest: false,
-        discount: true,
-        totalPrice: true,
-        status: true,
-        actions: true,
-    });
+    
 
     useEffect(() => {
         const fetchItems = async () => {
@@ -42,26 +26,21 @@ const Products = () => {
         fetchItems();
     }, []);
 
-    const handleColumnToggle = (event) => {
-        const { name, checked } = event.target;
-        setColumnVisibility((prev) => ({
-            ...prev,
-            [name]: checked,
-        }));
-    };
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value.toLowerCase());
     };
 
     const filteredItems = items.filter((item) => {
+        console.log('Item:', item); // Log the item
         const lowerCaseQuery = searchQuery.toLowerCase();
         return (
-            item.customerName.toLowerCase().includes(lowerCaseQuery) ||
-            item.nic.toLowerCase().includes(lowerCaseQuery) ||
-            item.itemName.toLowerCase().includes(lowerCaseQuery)
+            (item.customerName || '').toLowerCase().includes(lowerCaseQuery) ||
+            (item.nic || '').toLowerCase().includes(lowerCaseQuery) ||
+            (item.itemName || '').toLowerCase().includes(lowerCaseQuery)
         );
     });
+    
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this item?')) {
@@ -91,20 +70,26 @@ const Products = () => {
     };
     
 
- const handleSaveChanges = async () => {
+    const handleSaveChanges = async () => {
         if (selectedItem) {
             const formattedStartDate = formatDateForDb(selectedItem.startDate);
             const formattedEndDate = formatDateForDb(selectedItem.endDate);
             const totalPrice = calculateTotalPrice(selectedItem.priceOfItem, selectedItem.interest, selectedItem.duration);
-            const updatedItem = { ...selectedItem, startDate: formattedStartDate, endDate: formattedEndDate, totalPrice };
-
+            
+            const updatedItem = {
+                ...selectedItem,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate,
+                totalPrice
+            };
+            
             try {
                 const response = await axios.put(`http://localhost:5000/api/items/${updatedItem.id}`, updatedItem, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
-
+    
                 console.log('Item updated:', response.data);
                 setItems(items.map(item => item.id === updatedItem.id ? response.data : item));
                 setSelectedItem(null);
@@ -119,7 +104,8 @@ const Products = () => {
             }
         }
     };
-
+    
+    
     const handlePaymentReceived = async () => {
         if (selectedItem) {
             const totalPrice = calculateTotalPrice(selectedItem.priceOfItem, selectedItem.interest, selectedItem.duration);
@@ -160,7 +146,6 @@ const Products = () => {
                         ['End Date', selectedItem.endDate ? selectedItem.endDate.slice(0, 10) : 'N/A'],
                         ['Price of Item', selectedItem.priceOfItem],
                         ['Interest %', selectedItem.interest],
-                        ['Discount', selectedItem.discount],
                         ['Total Price', selectedItem.totalPrice],
                     ],
                     styles: {
@@ -195,16 +180,19 @@ const Products = () => {
     };
 
     const calculateTotalPrice = (priceOfItem, interest, duration) => {
-        const monthlyInterest = (priceOfItem * interest) / 100;
-        const totalInterest = monthlyInterest * duration;
-        const totalPrice = priceOfItem + totalInterest;
+        
+        const monthlyInterest = (priceOfItem * (interest / 100)); // Monthly interest
+        const totalInterest = monthlyInterest * duration; // Total interest for the duration
+        const totalPrice = priceOfItem + totalInterest; // Total price
         return totalPrice;
     };
+    
+    
 
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        const updatedValue = name === 'priceOfItem' || name === 'interest' || name === 'duration' ? parseFloat(value) || 0 : value;
+        const updatedValue = name === 'priceOfItem' || name === 'interest' || name === 'duration' ? parseInt(value) || 0 : value;
 
         // Update selected item
         setSelectedItem(prev => {
@@ -230,109 +218,70 @@ const Products = () => {
 
                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
                         <div className="input-group w-100 w-md-50 mb-3 mb-md-0">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search by Name, NIC, or Item Name"
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                            />
+                            <input type="text" className="form-control" placeholder="Search by Name, NIC, or Item Name"
+                                value={searchQuery} onChange={handleSearchChange} />
                         </div>
 
-                        <div className="ms-md-3 mt-3 mt-md-0 d-flex align-items-center">
-                            <div className="btn-group">
-                                <button
-                                    type="button"
-                                    className="btnall btnToggle btn-secondary dropdown-toggle"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
-                                    Toggle Columns
-                                </button>
-                                <ul className="dropdown-menu dropdown-menu-end p-3">
-                                    {Object.keys(columnVisibility).map((column, index) => (
-                                        <li key={index}>
-                                            <input
-                                                type="checkbox"
-                                                name={column}
-                                                checked={columnVisibility[column]}
-                                                onChange={handleColumnToggle}
-                                            />
-                                            {` ${column.charAt(0).toUpperCase() + column.slice(1).replace(/([A-Z])/g, ' $1')}`}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <div className="table-responsive">
                         <table className="table table-striped table-hover">
                             <thead>
-                                <tr>
-                                    {columnVisibility.id && <th>ID</th>}
-                                    {columnVisibility.name && <th>Name</th>}
-                                    {columnVisibility.nic && <th>NIC</th>}
-                                    {columnVisibility.address && <th>Address</th>}
-                                    {columnVisibility.phone && <th>Phone</th>}
-                                    {columnVisibility.startDate && <th>Start Date</th>}
-                                    {columnVisibility.category && <th>Item Category</th>}
-                                    {columnVisibility.itemName && <th>Item Name</th>}
-                                    {columnVisibility.priceOfItem && <th>Price of Item</th>}
-                                    {columnVisibility.endDate && <th>End Date</th>}
-                                    {columnVisibility.interest && <th>Interest %</th>}
-                                    {/* {columnVisibility.discount && <th>Discount</th>} */}
-                                    {columnVisibility.totalPrice && <th>Total Price</th>}
-                                    {columnVisibility.status && <th>Status</th>}
-                                    {columnVisibility.actions && <th>Actions</th>}
+                                 <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>NIC</th>
+                                    <th>Address</th>
+                                    <th>Phone</th>
+                                    <th>Start Date</th>
+                                    <th>Item Category</th>
+                                    <th>Item Name</th>
+                                    <th>Price of Item</th>
+                                    <th>End Date</th>
+                                    <th>Interest %</th>
+                                    <th>Total Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredItems.map((item, index) => (
-                                    <tr key={item._id}>
-                                        {columnVisibility.id && <td>{index + 1}</td>}
-                                        {columnVisibility.name && <td>{item.customerName}</td>}
-                                        {columnVisibility.nic && <td>{item.nic}</td>}
-                                        {columnVisibility.address && <td>{item.address}</td>}
-                                        {columnVisibility.phone && <td>{item.phone}</td>}
-                                        {columnVisibility.startDate && <td>{new Date(item.startDate).toLocaleDateString()}</td>}
-                                        {columnVisibility.category && <td>{item.category}</td>}
-                                        {columnVisibility.itemName && <td>{item.itemName}</td>}
-                                        {columnVisibility.priceOfItem && <td>{item.priceOfItem}</td>}
-                                        {columnVisibility.endDate && <td>{item.endDate ? new Date(item.endDate).toLocaleDateString() : 'N/A'}</td>}
-                                        {columnVisibility.interest && <td>{item.interest}</td>}
-                                        {/* {columnVisibility.discount && <td>{item.discount}</td>} */}
-                                        {columnVisibility.totalPrice && <td>{item.totalPrice}</td>}
+                                    <tr key={item.id}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.customerName}</td>
+                                        <td>{item.nic}</td>
+                                        <td>{item.address}</td>
+                                        <td>{item.phone}</td>
+                                        <td>{new Date(item.startDate).toLocaleDateString()}</td>
+                                        <td>{item.category}</td>
+                                        <td>{item.itemName}</td>
+                                        <td>{item.priceOfItem}</td>
+                                        <td>{item.endDate ? new Date(item.endDate).toLocaleDateString() : 'N/A'}</td>
+                                        <td>{item.interest}</td>
+                                        <td>{item.totalPrice}</td>
 
-                                        {columnVisibility.status && (
-                                            <td
-                                                style={{
-                                                    color: item.status === 'Payment Received' ? 'green' : 'red',
-                                                    fontWeight: item.status === 'Payment Received' ? 'bold' : 'bold',
+                                        <td
+                                            style={{
+                                                color: item.status === 'Payment Received' ? 'green' : 'red',
+                                                fontWeight: item.status === 'Payment Received' ? 'bold' : 'bold',
                                                 }}
                                             >
                                                 {item.status || 'Pending'}
-                                            </td>
-                                        )}
+                                        </td>
+                                       
 
-                                        {columnVisibility.actions && (
-                                            <td>
-                                                <button
-                                                    className="btn btn-primary me-2"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#updateModal"
-                                                    onClick={() => handleUpdate(item)}
-                                                >
-                                                    Update
-                                                </button>
-                                                <button
-                                                    className="btn btn-danger"
-                                                    onClick={() => handleDelete(item.id)}
-                                                >
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        )}
+                                        <td>
+
+                                            <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#updateModal" onClick={() => handleUpdate(item)} >
+                                                Update
+                                            </button>
+                                            
+                                            <button className="btn btn-danger" onClick={() => handleDelete(item.id)} >
+                                                Delete
+                                            </button>
+                                        </td>
+                                        
                                     </tr>
                                 ))}
                             </tbody>
@@ -340,133 +289,101 @@ const Products = () => {
                     </div>
 
                     {/* Update Modal */}
-                    <div
-                        className="modal fade"
-                        id="updateModal"
-                        tabIndex="-1"
-                        aria-labelledby="updateModalLabel"
-                        aria-hidden="true"
-                    >
+                    <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true" >
+                        
                         <div className="modal-dialog">
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h5 className="modal-title" id="updateModalLabel">Update Item</h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
+
                                 <div className="modal-body">
                                     {selectedItem && (
                                         <form>
                                             <div className="mb-2">
-                                                <img
-                                                    src={getImageUrl(selectedItem.id)}
-                                                    alt="Item"
-                                                    className="img-fluid"
-                                                    style={{ maxWidth: '100%', height: 'auto' }}
-                                                />
+                                                <img src={getImageUrl(selectedItem.id)}  alt="Item" className="img-fluid"  style={{ maxWidth: '100%', height: 'auto' }} />
                                             </div>
 
                                             <div className="mb-2">
                                                 <label className="form-label">Customer Name</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    value={selectedItem.customerName}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, customerName: e.target.value })}
-                                                />
+
+                                                <input type="text" className="form-control form-control-sm" value={selectedItem.customerName}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, customerName: e.target.value })} />
+
                                             </div>
+
                                             <div className="mb-2">
                                                 <label className="form-label">NIC</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    value={selectedItem.nic}
+
+                                                <input type="text" className="form-control form-control-sm" value={selectedItem.nic}
                                                     onChange={(e) => setSelectedItem({ ...selectedItem, nic: e.target.value })}
-                                                />
-                                            </div>
-                                            <div className="mb-2">
-                                                <label className="form-label">Address</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    value={selectedItem.address}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, address: e.target.value })}
-                                                />
-                                            </div>
-                                            <div className="mb-2">
-                                                <label className="form-label">Phone</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    value={selectedItem.phone}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, phone: e.target.value })}
-                                                />
-                                            </div>
-                                            <div className="mb-2">
-                                                <label className="form-label">Start Date</label>
-                                                <input
-                                                    type="date"
-                                                    className="form-control form-control-sm"
-                                                    value={selectedItem.startDate.slice(0, 10)}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, startDate: e.target.value })}
-                                                />
-                                            </div>
-                                            <div className="mb-2">
-                                                <label className="form-label">Item Category</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    value={selectedItem.category}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, category: e.target.value })}
-                                                />
-                                            </div>
-                                            <div className="mb-2">
-                                                <label className="form-label">Item Name</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    value={selectedItem.itemName}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, itemName: e.target.value })}
                                                 />
                                             </div>
 
                                             <div className="mb-2">
-                                                <label className="form-label">End Date</label>
-                                                <input
-                                                    type="date"
-                                                    className="form-control form-control-sm"
-                                                    value={selectedItem.endDate ? selectedItem.endDate.slice(0, 10) : ''}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, endDate: e.target.value })}
-                                                />
-                                            </div><div className="mb-2">
-                                                <label className="form-label">Price of Item</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control form-control-sm"
-                                                    name="priceOfItem"
-                                                    value={selectedItem.priceOfItem}
-                                                    onChange={handleChange}
-                                                />
+                                                <label className="form-label">Address</label>
+
+                                                <input type="text" className="form-control form-control-sm" value={selectedItem.address}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, address: e.target.value })} />
+
                                             </div>
+
+                                            <div className="mb-2">
+                                                <label className="form-label">Phone</label>
+
+                                                <input type="text" className="form-control form-control-sm" value={selectedItem.phone}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, phone: e.target.value })} />
+
+                                            </div>
+
+                                            <div className="mb-2">
+                                                <label className="form-label">Start Date</label>
+                                                <input type="date"  className="form-control form-control-sm" value={selectedItem.startDate.slice(0, 10)}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, startDate: e.target.value })} />
+                                            </div>
+
+                                            <div className="mb-2">
+                                                <label className="form-label">Item Category</label>
+                                                
+                                                <input type="text" className="form-control form-control-sm" value={selectedItem.category}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, category: e.target.value })}
+                                                />                                                
+                                            </div>
+
+                                            <div className="mb-2">
+                                                <label className="form-label">Item Name</label>
+                                                <input type="text" className="form-control form-control-sm"
+                                                    value={selectedItem.itemName} 
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, itemName: e.target.value })} />
+                                            </div>
+
+                                            <div className="mb-2">
+                                                <label className="form-label">End Date</label>
+                                                <input type="date" className="form-control form-control-sm"
+                                                    value={selectedItem.endDate ? selectedItem.endDate.slice(0, 10) : ''}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, endDate: e.target.value })} />
+                                            </div>
+                                            
+                                            <div className="mb-2">
+                                                <label className="form-label">Price of Item</label>
+                                                <input type="number" className="form-control form-control-sm" name="priceOfItem"
+                                                    value={selectedItem.priceOfItem} onChange={handleChange} />
+                                            </div>
+
                                             <div className="mb-2">
                                                 <label className="form-label">Interest (%)</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control form-control-sm"
-                                                    name="interest"
-                                                    value={selectedItem.interest}
-                                                    onChange={handleChange}
-                                                />
+                                                <input type="number" className="form-control form-control-sm" name="interest"
+                                                    value={selectedItem.interest} onChange={handleChange} 
+                                                    />
                                             </div>
+
                                             <div className="mb-2">
                                                 <label className="form-label">Duration (Months)</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control form-control-sm"
-                                                    name="duration"
-                                                    value={selectedItem.duration || ''}
-                                                    onChange={handleChange}
-                                                />
+                                                <input type="number" className="form-control form-control-sm" name="duration"
+                                                    value={selectedItem.duration || ''} onChange={handleChange} />                                                    
                                             </div>
+
                                             {/* <div className="mb-2">
                                                 <label className="form-label">Discount</label>
                                                 <input
@@ -477,42 +394,20 @@ const Products = () => {
                                                     onChange={handleChange}
                                                 />
                                             </div> */}
+
                                             <div className="mb-2">
                                                 <label className="form-label">Total Price</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control form-control-sm"
-                                                    name="totalPrice"
-                                                    value={selectedItem.totalPrice}
-                                                    onChange={handleChange}
-                                                    readOnly
-                                                />
+                                                <input type="number" className="form-control form-control-sm" name="totalPrice"
+                                                    value={selectedItem.totalPrice} onChange={handleChange} readOnly />
                                             </div>
+
                                         </form>
                                     )}
                                 </div>
                                 <div className="modal-footer">
-                                    <button
-                                        type="button"
-                                        className="btn btn-secondary"
-                                        data-bs-dismiss="modal"
-                                    >
-                                        Close
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary"
-                                        onClick={handleSaveChanges}
-                                    >
-                                        Save Changes
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-success"
-                                        onClick={handlePaymentReceived}
-                                    >
-                                        Payment Received
-                                    </button>
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" > Close </button>
+                                    <button type="button" className="btn btn-primary" onClick={handleSaveChanges} > Save Changes </button>
+                                    <button type="button" className="btn btn-success" onClick={handlePaymentReceived} > Payment Received </button>
                                 </div>
                             </div>
                         </div>

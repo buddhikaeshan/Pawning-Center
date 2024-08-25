@@ -12,23 +12,7 @@ const ProductsAdmin = () => {
     const [items, setItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedItem, setSelectedItem] = useState(null); // State to track selected item
-    const [columnVisibility, setColumnVisibility] = useState({
-        id: false,
-        name: true,
-        nic: true,
-        address: false,
-        phone: false,
-        startDate: true,
-        category: false,
-        itemName: true,
-        priceOfItem: true,
-        endDate: true,
-        interest: false,
-        discount: true,
-        totalPrice: true,
-        status: true,
-        actions: true,
-    });
+    
 
     useEffect(() => {
         const fetchItems = async () => {
@@ -43,32 +27,32 @@ const ProductsAdmin = () => {
         fetchItems();
     }, []);
 
-    const handleColumnToggle = (event) => {
-        const { name, checked } = event.target;
-        setColumnVisibility((prev) => ({
-            ...prev,
-            [name]: checked,
-        }));
-    };
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value.toLowerCase());
     };
 
     const filteredItems = items.filter((item) => {
+        console.log('Item:', item); // Log the item
         const lowerCaseQuery = searchQuery.toLowerCase();
         return (
-            item.customerName.toLowerCase().includes(lowerCaseQuery) ||
-            item.nic.toLowerCase().includes(lowerCaseQuery) ||
-            item.itemName.toLowerCase().includes(lowerCaseQuery)
+            (item.customerName || '').toLowerCase().includes(lowerCaseQuery) ||
+            (item.nic || '').toLowerCase().includes(lowerCaseQuery) ||
+            (item.itemName || '').toLowerCase().includes(lowerCaseQuery)
         );
     });
+    
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this item?')) {
             try {
+                // Ensure 'id' is not 'undefined' or invalid
+                if (id === undefined || id === null) {
+                    throw new Error('Invalid ID');
+                }
+    
                 await axios.delete(`http://localhost:5000/api/items/${id}`);
-                setItems(items.filter(item => item._id !== id)); // Update local state
+                setItems(items.filter(item => item.id !== id)); // Update local state
             } catch (error) {
                 console.error('Error deleting item:', error);
             }
@@ -90,7 +74,7 @@ const ProductsAdmin = () => {
             const updatedItem = { ...selectedItem, totalPrice };
 
             try {
-                const response = await axios.put(`http://localhost:5000/api/items/${updatedItem._id}`, updatedItem, {
+                const response = await axios.put(`http://localhost:5000/api/items/${updatedItem.id}`, updatedItem, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -99,7 +83,7 @@ const ProductsAdmin = () => {
                 console.log('Item updated:', response.data);
 
                 // Update local state
-                setItems(items.map(item => item._id === updatedItem._id ? response.data : item));
+                setItems(items.map(item => item.id === updatedItem.id ? response.data : item));
 
                 // Close modal
                 setSelectedItem(null);
@@ -126,8 +110,8 @@ const ProductsAdmin = () => {
             const updatedItem = { ...selectedItem, status: 'Payment Received', totalPrice };
 
             try {
-                await axios.put(`http://localhost:5000/api/items/${selectedItem._id}`, updatedItem);
-                setItems(items.map(item => item._id === selectedItem._id ? updatedItem : item));
+                await axios.put(`http://localhost:5000/api/items/${selectedItem.id}`, updatedItem);
+                setItems(items.map(item => item.id === selectedItem.id ? updatedItem : item));
                 setSelectedItem(null);
                 const modal = document.getElementById('updateModal');
                 const modalInstance = window.bootstrap.Modal.getInstance(modal);
@@ -135,19 +119,17 @@ const ProductsAdmin = () => {
                     modalInstance.hide();
                 }
                 window.location.reload();
+                
                 // Generate PDF
                 const doc = new jsPDF();
                 const date = new Date().toLocaleString();
 
-                // Title
                 doc.setFontSize(18);
                 doc.text('Payment Receipt', 14, 22);
 
-                // Date
                 doc.setFontSize(12);
                 doc.text(`Date: ${date}`, 14, 30);
 
-                // Table
                 doc.autoTable({
                     startY: 40,
                     head: [['Field', 'Value']],
@@ -162,7 +144,6 @@ const ProductsAdmin = () => {
                         ['End Date', selectedItem.endDate ? selectedItem.endDate.slice(0, 10) : 'N/A'],
                         ['Price of Item', selectedItem.priceOfItem],
                         ['Interest %', selectedItem.interest],
-                        ['Discount', selectedItem.discount],
                         ['Total Price', selectedItem.totalPrice],
                     ],
                     styles: {
@@ -183,7 +164,6 @@ const ProductsAdmin = () => {
                     },
                 });
 
-                // Save the PDF
                 doc.save('payment_receipt.pdf');
 
             } catch (error) {
@@ -206,7 +186,7 @@ const ProductsAdmin = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        const updatedValue = name === 'priceOfItem' || name === 'interest' || name === 'duration' ? parseFloat(value) || 0 : value;
+        const updatedValue = name === 'priceOfItem' || name === 'interest' || name === 'duration' ? parseInt(value) || 0 : value;
 
         // Update selected item
         setSelectedItem(prev => {
@@ -241,73 +221,46 @@ const ProductsAdmin = () => {
                             />
                         </div>
 
-                        <div className="ms-md-3 mt-3 mt-md-0 d-flex align-items-center">
-                            <div className="btn-group">
-                                <button
-                                    type="button"
-                                    className="btnall btnToggle btn-secondary dropdown-toggle"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
-                                    Toggle Columns
-                                </button>
-                                <ul className="dropdown-menu dropdown-menu-end p-3">
-                                    {Object.keys(columnVisibility).map((column, index) => (
-                                        <li key={index}>
-                                            <input
-                                                type="checkbox"
-                                                name={column}
-                                                checked={columnVisibility[column]}
-                                                onChange={handleColumnToggle}
-                                            />
-                                            {` ${column.charAt(0).toUpperCase() + column.slice(1).replace(/([A-Z])/g, ' $1')}`}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <div className="table-responsive">
                         <table className="table table-striped table-hover">
                             <thead>
-                                <tr>
-                                    {columnVisibility.id && <th>ID</th>}
-                                    {columnVisibility.name && <th>Name</th>}
-                                    {columnVisibility.nic && <th>NIC</th>}
-                                    {columnVisibility.address && <th>Address</th>}
-                                    {columnVisibility.phone && <th>Phone</th>}
-                                    {columnVisibility.startDate && <th>Start Date</th>}
-                                    {columnVisibility.category && <th>Item Category</th>}
-                                    {columnVisibility.itemName && <th>Item Name</th>}
-                                    {columnVisibility.priceOfItem && <th>Price of Item</th>}
-                                    {columnVisibility.endDate && <th>End Date</th>}
-                                    {columnVisibility.interest && <th>Interest %</th>}
-                                    {columnVisibility.discount && <th>Discount</th>}
-                                    {columnVisibility.totalPrice && <th>Total Price</th>}
-                                    {columnVisibility.status && <th>Status</th>}
-                                    {columnVisibility.actions && <th>Actions</th>}
+                            <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>NIC</th>
+                                    <th>Address</th>
+                                    <th>Phone</th>
+                                    <th>Start Date</th>
+                                    <th>Item Category</th>
+                                    <th>Item Name</th>
+                                    <th>Price of Item</th>
+                                    <th>End Date</th>
+                                    <th>Interest %</th>
+                                    <th>Total Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredItems.map((item, index) => (
-                                    <tr key={item._id}>
-                                        {columnVisibility.id && <td>{index + 1}</td>}
-                                        {columnVisibility.name && <td>{item.customerName}</td>}
-                                        {columnVisibility.nic && <td>{item.nic}</td>}
-                                        {columnVisibility.address && <td>{item.address}</td>}
-                                        {columnVisibility.phone && <td>{item.phone}</td>}
-                                        {columnVisibility.startDate && <td>{new Date(item.startDate).toLocaleDateString()}</td>}
-                                        {columnVisibility.category && <td>{item.category}</td>}
-                                        {columnVisibility.itemName && <td>{item.itemName}</td>}
-                                        {columnVisibility.priceOfItem && <td>{item.priceOfItem}</td>}
-                                        {columnVisibility.endDate && <td>{item.endDate ? new Date(item.endDate).toLocaleDateString() : 'N/A'}</td>}
-                                        {columnVisibility.interest && <td>{item.interest}</td>}
-                                        {columnVisibility.discount && <td>{item.discount}</td>}
-                                        {columnVisibility.totalPrice && <td>{item.totalPrice}</td>}
+                                    <tr key={item.id}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.customerName}</td>
+                                        <td>{item.nic}</td>
+                                        <td>{item.address}</td>
+                                        <td>{item.phone}</td>
+                                        <td>{new Date(item.startDate).toLocaleDateString()}</td>
+                                        <td>{item.category}</td>
+                                        <td>{item.itemName}</td>
+                                        <td>{item.priceOfItem}</td>
+                                        <td>{item.endDate ? new Date(item.endDate).toLocaleDateString() : 'N/A'}</td>
+                                        <td>{item.interest}</td>
+                                        <td>{item.totalPrice}</td>
 
-                                        {columnVisibility.status && (
-                                            <td
+                                        <td
                                                 style={{
                                                     color: item.status === 'Payment Received' ? 'green' : 'red',
                                                     fontWeight: item.status === 'Payment Received' ? 'bold' : 'bold',
@@ -315,10 +268,9 @@ const ProductsAdmin = () => {
                                             >
                                                 {item.status || 'Pending'}
                                             </td>
-                                        )}
+                                        
 
-                                        {columnVisibility.actions && (
-                                            <td>
+                                        <td>
                                                 <button
                                                     className="btn btn-primary me-2"
                                                     data-bs-toggle="modal"
@@ -329,12 +281,12 @@ const ProductsAdmin = () => {
                                                 </button>
                                                 <button
                                                     className="btn btn-secondary disabled"
-                                                    onClick={() => handleDelete(item._id)}
+                                                    onClick={() => handleDelete(item.id)}
                                                 >
                                                     Delete
                                                 </button>
-                                            </td>
-                                        )}
+                                        </td>
+                                        
                                     </tr>
                                 ))}
                             </tbody>
@@ -361,7 +313,7 @@ const ProductsAdmin = () => {
                                             <div className="mb-2">
 
                                                 <img
-                                                    src={getImageUrl(selectedItem._id)}
+                                                    src={getImageUrl(selectedItem.id)}
                                                     alt="Item"
                                                     className="img-fluid"
                                                     style={{ maxWidth: '100%', height: 'auto' }}
@@ -433,12 +385,12 @@ const ProductsAdmin = () => {
 
                                             <div className="mb-2">
                                                 <label className="form-label">End Date</label>
-                                                <input
-                                                    type="date"
-                                                    className="form-control form-control-sm"
+                                                <input type="date" className="form-control form-control-sm"
                                                     value={selectedItem.endDate ? selectedItem.endDate.slice(0, 10) : ''}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, endDate: e.target.value })}
-                                                />
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, endDate: e.target.value })} />
+
+                                                
+
                                             </div><div className="mb-2">
                                                 <label className="form-label">Price of Item</label>
                                                 <input
