@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../../components/Sidebar';
 import axios from 'axios';
-import './Customers.css'
+import './Customers.css';
 
 const Customers = () => {
     const [customers, setCustomers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCustomer, setSelectedCustomer] = useState(null); // For selected customer to edit
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const Customers = () => {
         if (window.confirm('Are you sure you want to delete this customer?')) {
             try {
                 await axios.delete(`http://localhost:5000/api/customers/${id}`);
-                setCustomers(customers.filter(customer => customer._id !== id)); // Update local state
+                setCustomers(customers.filter(customer => customer.id !== id));
             } catch (error) {
                 console.error('Error deleting customer:', error);
             }
@@ -48,11 +48,11 @@ const Customers = () => {
     const handleUpdate = async () => {
         if (selectedCustomer) {
             try {
-                await axios.put(`http://localhost:5000/api/customers/${selectedCustomer._id}`, selectedCustomer);
+                await axios.put(`http://localhost:5000/api/customers/${selectedCustomer.id}`, selectedCustomer);
                 setCustomers(customers.map(customer => 
-                    customer._id === selectedCustomer._id ? selectedCustomer : customer
+                    customer.id === selectedCustomer.id ? selectedCustomer : customer
                 ));
-                setShowModal(false); // Close modal after update
+                setShowModal(false);
             } catch (error) {
                 console.error('Error updating customer:', error);
             }
@@ -99,7 +99,7 @@ const Customers = () => {
                             </thead>
                             <tbody>
                                 {filteredCustomers.map((customer, index) => (
-                                    <tr key={customer._id}>
+                                    <tr key={customer.id}>
                                         <td>{index + 1}</td>
                                         <td>{customer.customerName}</td>
                                         <td>{customer.nic}</td>
@@ -117,7 +117,7 @@ const Customers = () => {
                                             </button>
                                             <button
                                                 className="btnDelete btn-danger btn-sm"
-                                                onClick={() => handleDelete(customer._id)}
+                                                onClick={() => handleDelete(customer.id)}
                                             >
                                                 Delete
                                             </button>

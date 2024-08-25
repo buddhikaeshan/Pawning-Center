@@ -169,7 +169,7 @@ const Form = ({ onClose }) => {
                             id="image"
                             onChange={handleChange}
                             accept="image/*"
-                            required
+                            
                         />
                     </div>
 

@@ -66,41 +66,47 @@ const Products = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this item?')) {
             try {
+                // Ensure 'id' is not 'undefined' or invalid
+                if (id === undefined || id === null) {
+                    throw new Error('Invalid ID');
+                }
+    
                 await axios.delete(`http://localhost:5000/api/items/${id}`);
-                setItems(items.filter(item => item._id !== id)); // Update local state
+                setItems(items.filter(item => item.id !== id)); // Update local state
             } catch (error) {
                 console.error('Error deleting item:', error);
             }
         }
     };
+    
 
     const handleUpdate = (item) => {
         setSelectedItem(item);
     };
 
-    const handleSaveChanges = async () => {
+    const formatDateForDb = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toISOString().slice(0, 19).replace('T', ' '); // 'YYYY-MM-DD HH:MM:SS'
+    };
+    
+
+ const handleSaveChanges = async () => {
         if (selectedItem) {
-            // Calculate the total price before updating
-            const totalPrice = calculateTotalPrice(
-                selectedItem.priceOfItem,
-                selectedItem.interest,
-                selectedItem.duration
-            );
-            const updatedItem = { ...selectedItem, totalPrice };
+            const formattedStartDate = formatDateForDb(selectedItem.startDate);
+            const formattedEndDate = formatDateForDb(selectedItem.endDate);
+            const totalPrice = calculateTotalPrice(selectedItem.priceOfItem, selectedItem.interest, selectedItem.duration);
+            const updatedItem = { ...selectedItem, startDate: formattedStartDate, endDate: formattedEndDate, totalPrice };
 
             try {
-                const response = await axios.put(`http://localhost:5000/api/items/${updatedItem._id}`, updatedItem, {
+                const response = await axios.put(`http://localhost:5000/api/items/${updatedItem.id}`, updatedItem, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
 
                 console.log('Item updated:', response.data);
-
-                // Update local state
-                setItems(items.map(item => item._id === updatedItem._id ? response.data : item));
-
-                // Close modal
+                setItems(items.map(item => item.id === updatedItem.id ? response.data : item));
                 setSelectedItem(null);
                 const modal = document.getElementById('updateModal');
                 const modalInstance = window.bootstrap.Modal.getInstance(modal);
@@ -116,17 +122,12 @@ const Products = () => {
 
     const handlePaymentReceived = async () => {
         if (selectedItem) {
-            // Calculate the total price before updating
-            const totalPrice = calculateTotalPrice(
-                selectedItem.priceOfItem,
-                selectedItem.interest,
-                selectedItem.duration
-            );
+            const totalPrice = calculateTotalPrice(selectedItem.priceOfItem, selectedItem.interest, selectedItem.duration);
             const updatedItem = { ...selectedItem, status: 'Payment Received', totalPrice };
 
             try {
-                await axios.put(`http://localhost:5000/api/items/${selectedItem._id}`, updatedItem);
-                setItems(items.map(item => item._id === selectedItem._id ? updatedItem : item));
+                await axios.put(`http://localhost:5000/api/items/${selectedItem.id}`, updatedItem);
+                setItems(items.map(item => item.id === selectedItem.id ? updatedItem : item));
                 setSelectedItem(null);
                 const modal = document.getElementById('updateModal');
                 const modalInstance = window.bootstrap.Modal.getInstance(modal);
@@ -134,19 +135,17 @@ const Products = () => {
                     modalInstance.hide();
                 }
                 window.location.reload();
+                
                 // Generate PDF
                 const doc = new jsPDF();
                 const date = new Date().toLocaleString();
 
-                // Title
                 doc.setFontSize(18);
                 doc.text('Payment Receipt', 14, 22);
 
-                // Date
                 doc.setFontSize(12);
                 doc.text(`Date: ${date}`, 14, 30);
 
-                // Table
                 doc.autoTable({
                     startY: 40,
                     head: [['Field', 'Value']],
@@ -182,7 +181,6 @@ const Products = () => {
                     },
                 });
 
-                // Save the PDF
                 doc.save('payment_receipt.pdf');
 
             } catch (error) {
@@ -190,6 +188,7 @@ const Products = () => {
             }
         }
     };
+    
 
     const getImageUrl = (itemId) => {
         return `http://localhost:5000/api/items/${itemId}/image`;
@@ -282,7 +281,7 @@ const Products = () => {
                                     {columnVisibility.priceOfItem && <th>Price of Item</th>}
                                     {columnVisibility.endDate && <th>End Date</th>}
                                     {columnVisibility.interest && <th>Interest %</th>}
-                                    {columnVisibility.discount && <th>Discount</th>}
+                                    {/* {columnVisibility.discount && <th>Discount</th>} */}
                                     {columnVisibility.totalPrice && <th>Total Price</th>}
                                     {columnVisibility.status && <th>Status</th>}
                                     {columnVisibility.actions && <th>Actions</th>}
@@ -302,7 +301,7 @@ const Products = () => {
                                         {columnVisibility.priceOfItem && <td>{item.priceOfItem}</td>}
                                         {columnVisibility.endDate && <td>{item.endDate ? new Date(item.endDate).toLocaleDateString() : 'N/A'}</td>}
                                         {columnVisibility.interest && <td>{item.interest}</td>}
-                                        {columnVisibility.discount && <td>{item.discount}</td>}
+                                        {/* {columnVisibility.discount && <td>{item.discount}</td>} */}
                                         {columnVisibility.totalPrice && <td>{item.totalPrice}</td>}
 
                                         {columnVisibility.status && (
@@ -328,7 +327,7 @@ const Products = () => {
                                                 </button>
                                                 <button
                                                     className="btn btn-danger"
-                                                    onClick={() => handleDelete(item._id)}
+                                                    onClick={() => handleDelete(item.id)}
                                                 >
                                                     Delete
                                                 </button>
@@ -359,7 +358,7 @@ const Products = () => {
                                         <form>
                                             <div className="mb-2">
                                                 <img
-                                                    src={getImageUrl(selectedItem._id)}
+                                                    src={getImageUrl(selectedItem.id)}
                                                     alt="Item"
                                                     className="img-fluid"
                                                     style={{ maxWidth: '100%', height: 'auto' }}
