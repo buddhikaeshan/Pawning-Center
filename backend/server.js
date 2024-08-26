@@ -23,13 +23,14 @@ app.use(bodyParser.json({ limit: '10mb' })); // Increase limit as needed
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 const connection = mysql.createConnection({
-    host: 'sql.freedb.tech',
-    user: 'freedb_nmtest',
-    password: 'F6keBjVju?Pr&gz',
-    // host: 'localhost',
-    // user: 'root',
-    // password: '',
-    database: 'freedb_delmamountview'
+    // host: 'sql.freedb.tech',
+    // user: 'freedb_nmtest',
+    // password: 'F6keBjVju?Pr&gz',
+    // database: 'freedb_delmamountview'
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'freedb_nmpawning'
 });
 
 connection.connect((err) => {
