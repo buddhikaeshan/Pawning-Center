@@ -11,15 +11,15 @@ const app = express();
 const port = 5000;
 
 const corsOptions = {
-    origin: 'http://localhost:3000', // Allow only your frontend origin
-    credentials: true, // Allow credentials (cookies, etc.)
+    origin: 'http://localhost:3000', // Allow frontend origin
+    credentials: true, // Allow credentials (cookies)
 };
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
 // Middleware
-app.use(bodyParser.json({ limit: '10mb' })); // Increase limit as needed
+app.use(bodyParser.json({ limit: '10mb' })); // limit 
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 const connection = mysql.createConnection({
@@ -44,10 +44,10 @@ connection.connect((err) => {
 const storage = multer.memoryStorage(); // Store files in memory
 const upload = multer({ 
     storage, 
-    limits: { fileSize: 10 * 1024 * 1024 } // Limit file size to 10MB
+    limits: { fileSize: 10 * 1024 * 1024 } // Limit file to 10MB
 });
 
-// Middleware for handling image uploads
+//image uploads
 app.post('/api/submit', upload.single('image'), (req, res) => {
     const {
         customerName,
@@ -59,11 +59,11 @@ app.post('/api/submit', upload.single('image'), (req, res) => {
         itemName,
         priceOfItem,
     } = req.body;
-    const image = req.file; // Image file data
+    const image = req.file; 
 
     let imageData = null;
     if (image) {
-        imageData = image.buffer; // Use `buffer` property for memory storage
+        imageData = image.buffer; 
     }
 
     // Check if customer exists
@@ -98,7 +98,7 @@ app.post('/api/submit', upload.single('image'), (req, res) => {
     });
 });
 
-// API endpoint to get all customers
+// API to get all customers
 app.get('/api/customers', (req, res) => {
     const getCustomersQuery = 'SELECT * FROM Customers';
     connection.query(getCustomersQuery, (err, results) => {
@@ -111,7 +111,7 @@ app.get('/api/customers', (req, res) => {
     });
 });
 
-// API endpoint to get all items
+// API to get all items
 app.get('/api/items', (req, res) => {
     const getItemsQuery = 'SELECT * FROM Items';
     connection.query(getItemsQuery, (err, results) => {
@@ -124,7 +124,7 @@ app.get('/api/items', (req, res) => {
     });
 });
 
-// API endpoint to get an item image
+// API to get an item image
 app.get('/api/items/:id/image', (req, res) => {
     const { id } = req.params;
     const getItemImageQuery = 'SELECT image FROM Items WHERE id = ?';
@@ -138,12 +138,12 @@ app.get('/api/items/:id/image', (req, res) => {
             return res.status(404).json({ message: 'Image not found' });
         }
 
-        res.set('Content-Type', 'image/jpeg'); // Adjust the MIME type as necessary
+        res.set('Content-Type', 'image/jpeg'); 
         res.send(results[0].image);
     });
 });
 
-// Route to create a new admin
+//create a new admin
 app.post('/api/admins', (req, res) => {
     const { username, password, accountType } = req.body;
 
@@ -162,7 +162,7 @@ app.post('/api/admins', (req, res) => {
     });
 });
 
-// Login route
+// Login 
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -186,7 +186,7 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Update customer endpoint
+// Update customer 
 app.put('/api/customers/:id', (req, res) => {
     const { id } = req.params;
     const { customerName, nic, address, phone } = req.body;
@@ -206,14 +206,14 @@ app.put('/api/customers/:id', (req, res) => {
     });
 });
 
-// Update item endpoint
+// Update item 
 app.put('/api/items/:id', (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
 
-    // Handle empty or invalid datetime values
+    // Handle empty invalid datetime 
     if (updateData.endDate === '') {
-        updateData.endDate = null; // Set to null if it's an empty string
+        updateData.endDate = null; // Set to null if empty 
     }
 
     const updateItemQuery = 'UPDATE Items SET ? WHERE id = ?';
@@ -232,11 +232,11 @@ app.put('/api/items/:id', (req, res) => {
 });
 
 
-// Delete customer endpoint
+// Delete customer 
 app.delete('/api/customers/:id', (req, res) => {
     const { id } = req.params;
     
-    // Log the ID received from the request
+   
     console.log('Received customer ID for deletion:', id);
     
     if (!id) {
@@ -259,7 +259,7 @@ app.delete('/api/customers/:id', (req, res) => {
     });
 });
 
-// Delete item endpoint
+// Delete item 
 app.delete('/api/items/:id', (req, res) => {
     const { id } = req.params;
 
@@ -279,7 +279,26 @@ app.delete('/api/items/:id', (req, res) => {
     });
 });
 
+
+app.get('/api/items/report', (req, res) => {
+    const { startDate, endDate } = req.query;
+    const query = `
+      SELECT id, customerName, nic, itemName, startDate, endDate, priceOfItem, totalPrice 
+      FROM Items 
+      WHERE status = 'Payment Received' AND startDate BETWEEN ? AND ?
+    `;
+  
+    connection.query(query, [startDate, endDate], (err, results) => {
+      if (err) {
+        console.error('Error fetching report data:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.json(results);
+    });
+  });
+
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
 
 // Authentication middleware
 const SECRET_KEY = 'NMSOLUTION';
@@ -299,7 +318,7 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// Protected route example
+// Protected route 
 app.get('/api/protected', authenticateToken, (req, res) => {
     res.status(200).json({ message: 'You have accessed a protected route!' });
 });

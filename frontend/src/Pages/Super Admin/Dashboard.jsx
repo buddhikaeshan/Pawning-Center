@@ -45,7 +45,7 @@ const Dashboard = () => {
                                     Create Admins
                                 </NavLink>
                             </div>
-                            {/* <div className="col-md-4 mb-3" id="dMain">
+                            <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/Report" 
                                     className="p-3 tabs reportTab d-flex align-items-center justify-content-center text-decoration-none"
@@ -53,7 +53,8 @@ const Dashboard = () => {
                                     Monthly Report
                                 </NavLink>
                             </div> 
-                            <div className="col-md-4 mb-3" id="dMain">
+
+                           {/*  <div className="col-md-4 mb-3" id="dMain">
                                 <NavLink 
                                     to="/Settings" 
                                     className="p-3 tabs setTab d-flex align-items-center justify-content-center text-decoration-none"

@@ -56,12 +56,12 @@ const Sidebar = () => {
                             <span className="ms-1 d-none d-sm-inline">Create Admin</span>
                         </NavLink>
                     </li>
-                    {/* <li>
-                        <NavLink to="/Profile" className={({ isActive }) => "navlink btn px-3 align-middle mb-4 " + (isActive ? "active" : "")}>
+                    <li>
+                        <NavLink to="/Report" className={({ isActive }) => "navlink btn px-3 align-middle mb-4 " + (isActive ? "active" : "")}>
                             <i className="fs-4 bi bi-gear"></i>
-                            <span className="ms-1 d-none d-sm-inline">Settings</span>
+                            <span className="ms-1 d-none d-sm-inline">Report</span>
                         </NavLink>
-                    </li> */}
+                    </li>
                     <hr />
                     <li>
                         <NavLink onClick={handleLogout} className="logout">
