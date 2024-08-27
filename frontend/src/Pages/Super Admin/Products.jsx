@@ -237,7 +237,7 @@ const Products = () => {
                     </div>
 
                     <div className="table-responsive">
-                        <table className="table table-striped table-hover small-table table-sm p-1">
+                        <table className="table table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -245,10 +245,10 @@ const Products = () => {
                                     <th>NIC</th>
                                     <th>Address</th>
                                     <th>Phone</th>
-                                    <th>Start Date</th>
                                     <th>Item Category</th>
                                     <th>Item Name</th>
                                     <th>Price of Item</th>
+                                    <th>Start Date</th>
                                     <th>End Date</th>
                                     <th>Interest %</th>
                                     <th>Total Price</th>
@@ -264,10 +264,10 @@ const Products = () => {
                                         <td>{item.nic}</td>
                                         <td>{item.address}</td>
                                         <td>{item.phone}</td>
-                                        <td>{new Date(item.startDate).toLocaleDateString()}</td>
                                         <td>{item.category}</td>
                                         <td>{item.itemName}</td>
                                         <td>{item.priceOfItem}</td>
+                                        <td>{new Date(item.startDate).toLocaleDateString()}</td>
                                         <td>{item.endDate ? new Date(item.endDate).toLocaleDateString() : 'N/A'}</td>
                                         <td>{item.interest}</td>
                                         <td>{item.totalPrice}</td>
