@@ -10,8 +10,7 @@ import 'jspdf-autotable';
 const Products = () => {
     const [items, setItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedItem, setSelectedItem] = useState(null); // State to track selected item
-    
+    const [selectedItem, setSelectedItem] = useState(null);
 
     useEffect(() => {
         const fetchItems = async () => {
@@ -40,16 +39,15 @@ const Products = () => {
             (item.itemName || '').toLowerCase().includes(lowerCaseQuery)
         );
     });
-    
+
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this item?')) {
             try {
-                // Ensure 'id' is not 'undefined' or invalid
                 if (id === undefined || id === null) {
                     throw new Error('Invalid ID');
                 }
-    
+
                 await axios.delete(`http://localhost:5000/api/items/${id}`);
                 setItems(items.filter(item => item.id !== id)); // Update local state
             } catch (error) {
@@ -57,7 +55,7 @@ const Products = () => {
             }
         }
     };
-    
+
 
     const handleUpdate = (item) => {
         setSelectedItem(item);
@@ -68,28 +66,24 @@ const Products = () => {
         const date = new Date(dateString);
         return date.toISOString().slice(0, 19).replace('T', ' '); // 'YYYY-MM-DD HH:MM:SS'
     };
-    
+
 
     const handleSaveChanges = async () => {
         if (selectedItem) {
-            const formattedStartDate = formatDateForDb(selectedItem.startDate);
-            const formattedEndDate = formatDateForDb(selectedItem.endDate);
-            const totalPrice = calculateTotalPrice(selectedItem.priceOfItem, selectedItem.interest, selectedItem.duration);
-            
-            const updatedItem = {
-                ...selectedItem,
-                startDate: formattedStartDate,
-                endDate: formattedEndDate,
-                totalPrice
-            };
-            
+            const totalPrice = calculateTotalPrice(
+                selectedItem.priceOfItem,
+                selectedItem.interest,
+                selectedItem.duration
+            );
+            const updatedItem = { ...selectedItem, totalPrice };
+
             try {
                 const response = await axios.put(`http://localhost:5000/api/items/${updatedItem.id}`, updatedItem, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
-    
+
                 console.log('Item updated:', response.data);
                 setItems(items.map(item => item.id === updatedItem.id ? response.data : item));
                 setSelectedItem(null);
@@ -104,11 +98,15 @@ const Products = () => {
             }
         }
     };
-    
-    
+
+
     const handlePaymentReceived = async () => {
         if (selectedItem) {
-            const totalPrice = calculateTotalPrice(selectedItem.priceOfItem, selectedItem.interest, selectedItem.duration);
+            const totalPrice = calculateTotalPrice(
+                selectedItem.priceOfItem,
+                selectedItem.interest,
+                selectedItem.duration
+            );
             const updatedItem = { ...selectedItem, status: 'Payment Received', totalPrice };
 
             try {
@@ -121,7 +119,7 @@ const Products = () => {
                     modalInstance.hide();
                 }
                 window.location.reload();
-                
+
                 // Generate PDF
                 const doc = new jsPDF();
                 const date = new Date().toLocaleString();
@@ -144,6 +142,7 @@ const Products = () => {
                         ['Item Name', selectedItem.itemName],
                         ['Start Date', selectedItem.startDate ? selectedItem.startDate.slice(0, 10) : 'N/A'],
                         ['End Date', selectedItem.endDate ? selectedItem.endDate.slice(0, 10) : 'N/A'],
+                        ['Duration', selectedItem.duration],
                         ['Price of Item', selectedItem.priceOfItem],
                         ['Interest %', selectedItem.interest],
                         ['Total Price', selectedItem.totalPrice],
@@ -173,41 +172,53 @@ const Products = () => {
             }
         }
     };
-    
+
 
     const getImageUrl = (itemId) => {
         return `http://localhost:5000/api/items/${itemId}/image`;
     };
 
     const calculateTotalPrice = (priceOfItem, interest, duration) => {
-        
-        const monthlyInterest = (priceOfItem * (interest / 100)); // Monthly interest
-        const totalInterest = monthlyInterest * duration; // Total interest for the duration
-        const totalPrice = priceOfItem + totalInterest; // Total price
+        if (!interest || !duration) {
+            return ''; 
+        }
+    
+        const monthlyInterest = ((priceOfItem * interest) / 100);
+        const totalInterest = (monthlyInterest * duration);
+        const totalPrice = (priceOfItem + totalInterest);
+    
         return totalPrice;
     };
     
     
 
-
     const handleChange = (e) => {
         const { name, value } = e.target;
-        const updatedValue = name === 'priceOfItem' || name === 'interest' || name === 'duration' ? parseInt(value) || 0 : value;
-
-        // Update selected item
+        const updatedValue = name === 'priceOfItem' || name === 'interest' || name === 'duration' ? parseFloat(value) || 0 : value;
+    
         setSelectedItem(prev => {
             const updatedItem = { ...prev, [name]: updatedValue };
-
-            // Recalculate total price
+    
+            if (name === 'duration' || name === 'startDate') {
+                const startDate = updatedItem.startDate ? new Date(updatedItem.startDate) : null;
+                const duration = updatedItem.duration ? parseInt(updatedItem.duration) : 0;
+                if (startDate && duration) {
+                    const endDate = new Date(startDate);
+                    endDate.setMonth(endDate.getMonth() + duration);
+                    updatedItem.endDate = endDate.toISOString().slice(0, 10);
+                }
+            }
+    
             const totalPrice = calculateTotalPrice(
                 updatedItem.priceOfItem,
                 updatedItem.interest,
                 updatedItem.duration
             );
-            return { ...updatedItem, totalPrice };
+            updatedItem.totalPrice = totalPrice;
+    
+            return updatedItem;
         });
     };
-
 
     return (
         <div className="container-fluid">
@@ -222,13 +233,13 @@ const Products = () => {
                                 value={searchQuery} onChange={handleSearchChange} />
                         </div>
 
-                        
+
                     </div>
 
                     <div className="table-responsive">
                         <table className="table table-striped table-hover">
                             <thead>
-                                 <tr>
+                                <tr>
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>NIC</th>
@@ -265,23 +276,23 @@ const Products = () => {
                                             style={{
                                                 color: item.status === 'Payment Received' ? 'green' : 'red',
                                                 fontWeight: item.status === 'Payment Received' ? 'bold' : 'bold',
-                                                }}
-                                            >
-                                                {item.status || 'Pending'}
+                                            }}
+                                        >
+                                            {item.status || 'Pending'}
                                         </td>
-                                       
+
 
                                         <td>
 
                                             <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#updateModal" onClick={() => handleUpdate(item)} >
                                                 Update
                                             </button>
-                                            
+
                                             <button className="btn btn-danger" onClick={() => handleDelete(item.id)} >
                                                 Delete
                                             </button>
                                         </td>
-                                        
+
                                     </tr>
                                 ))}
                             </tbody>
@@ -290,7 +301,7 @@ const Products = () => {
 
                     {/* Update Modal */}
                     <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true" >
-                        
+
                         <div className="modal-dialog">
                             <div className="modal-content">
                                 <div className="modal-header">
@@ -302,7 +313,7 @@ const Products = () => {
                                     {selectedItem && (
                                         <form>
                                             <div className="mb-2">
-                                                <img src={getImageUrl(selectedItem.id)}  alt="Item" className="img-fluid"  style={{ maxWidth: '100%', height: 'auto' }} />
+                                                <img src={getImageUrl(selectedItem.id)} alt="Item" className="img-fluid" style={{ maxWidth: '100%', height: 'auto' }} />
                                             </div>
 
                                             <div className="mb-2">
@@ -338,33 +349,33 @@ const Products = () => {
                                             </div>
 
                                             <div className="mb-2">
-                                                <label className="form-label">Start Date</label>
-                                                <input type="date"  className="form-control form-control-sm" value={selectedItem.startDate.slice(0, 10)}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, startDate: e.target.value })} />
-                                            </div>
-
-                                            <div className="mb-2">
                                                 <label className="form-label">Item Category</label>
-                                                
+
                                                 <input type="text" className="form-control form-control-sm" value={selectedItem.category}
                                                     onChange={(e) => setSelectedItem({ ...selectedItem, category: e.target.value })}
-                                                />                                                
+                                                />
                                             </div>
 
                                             <div className="mb-2">
                                                 <label className="form-label">Item Name</label>
                                                 <input type="text" className="form-control form-control-sm"
-                                                    value={selectedItem.itemName} 
+                                                    value={selectedItem.itemName}
                                                     onChange={(e) => setSelectedItem({ ...selectedItem, itemName: e.target.value })} />
+                                            </div>
+
+                                            <div className="mb-2">
+                                                <label className="form-label">Start Date</label>
+                                                <input type="date" className="form-control form-control-sm" value={selectedItem.startDate.slice(0, 10)}
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, startDate: e.target.value })} />
                                             </div>
 
                                             <div className="mb-2">
                                                 <label className="form-label">End Date</label>
                                                 <input type="date" className="form-control form-control-sm"
                                                     value={selectedItem.endDate ? selectedItem.endDate.slice(0, 10) : ''}
-                                                    onChange={(e) => setSelectedItem({ ...selectedItem, endDate: e.target.value })} />
+                                                    onChange={(e) => setSelectedItem({ ...selectedItem, endDate: e.target.value })}  />
                                             </div>
-                                            
+
                                             <div className="mb-2">
                                                 <label className="form-label">Price of Item</label>
                                                 <input type="number" className="form-control form-control-sm" name="priceOfItem"
@@ -374,26 +385,15 @@ const Products = () => {
                                             <div className="mb-2">
                                                 <label className="form-label">Interest (%)</label>
                                                 <input type="number" className="form-control form-control-sm" name="interest"
-                                                    value={selectedItem.interest} onChange={handleChange} 
-                                                    />
+                                                    value={selectedItem.interest} onChange={handleChange}
+                                                />
                                             </div>
 
                                             <div className="mb-2">
                                                 <label className="form-label">Duration (Months)</label>
                                                 <input type="number" className="form-control form-control-sm" name="duration"
-                                                    value={selectedItem.duration || ''} onChange={handleChange} />                                                    
+                                                    value={selectedItem.duration || ''} onChange={handleChange} />
                                             </div>
-
-                                            {/* <div className="mb-2">
-                                                <label className="form-label">Discount</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control form-control-sm"
-                                                    name="discount"
-                                                    value={selectedItem.discount}
-                                                    onChange={handleChange}
-                                                />
-                                            </div> */}
 
                                             <div className="mb-2">
                                                 <label className="form-label">Total Price</label>
