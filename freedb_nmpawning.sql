@@ -45,10 +45,10 @@ INSERT INTO `admins` (`id`, `username`, `password`, `accountType`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `customers`
+-- Table structure for table `Customers`
 --
 
-CREATE TABLE `customers` (
+CREATE TABLE `Customers` (
   `id` int(11) NOT NULL,
   `customerName` varchar(255) NOT NULL,
   `nic` varchar(20) NOT NULL,
@@ -57,20 +57,20 @@ CREATE TABLE `customers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `customers`
+-- Dumping data for table `Customers`
 --
 
-INSERT INTO `customers` (`id`, `customerName`, `nic`, `address`, `phone`) VALUES
+INSERT INTO `Customers` (`id`, `customerName`, `nic`, `address`, `phone`) VALUES
 (1, 'z12', 'z12', 'z12', 'z12'),
 (4, 'test', 'test', 'test', 'test');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `items`
+-- Table structure for table `Items`
 --
 
-CREATE TABLE `items` (
+CREATE TABLE `Items` (
   `id` int(11) NOT NULL,
   `customerName` varchar(255) DEFAULT NULL,
   `nic` varchar(20) DEFAULT NULL,
@@ -89,10 +89,10 @@ CREATE TABLE `items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `items`
+-- Dumping data for table `Items`
 --
 
-INSERT INTO `items` (`id`, `customerName`, `nic`, `address`, `phone`, `startDate`, `category`, `itemName`, `priceOfItem`, `image`, `endDate`, `totalPrice`, `interest`, `duration`, `status`) VALUES
+INSERT INTO `Items` (`id`, `customerName`, `nic`, `address`, `phone`, `startDate`, `category`, `itemName`, `priceOfItem`, `image`, `endDate`, `totalPrice`, `interest`, `duration`, `status`) VALUES
 (4, 'test', 'test', 'test', 'test', '2024-08-20', 'Phone', 'test', 70000.00, NULL, NULL, 70000.00, 20.00, 1, 'Payment Received');
 
 --
@@ -107,16 +107,16 @@ ALTER TABLE `admins`
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- Indexes for table `customers`
+-- Indexes for table `Customers`
 --
-ALTER TABLE `customers`
+ALTER TABLE `Customers`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nic` (`nic`);
 
 --
--- Indexes for table `items`
+-- Indexes for table `Items`
 --
-ALTER TABLE `items`
+ALTER TABLE `Items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `nic` (`nic`);
 
@@ -131,15 +131,15 @@ ALTER TABLE `admins`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `customers`
+-- AUTO_INCREMENT for table `Customers`
 --
-ALTER TABLE `customers`
+ALTER TABLE `Customers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `items`
+-- AUTO_INCREMENT for table `Items`
 --
-ALTER TABLE `items`
+ALTER TABLE `Items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
@@ -147,10 +147,10 @@ ALTER TABLE `items`
 --
 
 --
--- Constraints for table `items`
+-- Constraints for table `Items`
 --
-ALTER TABLE `items`
-  ADD CONSTRAINT `items_ibfk_1` FOREIGN KEY (`nic`) REFERENCES `customers` (`nic`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Items`
+  ADD CONSTRAINT `Items_ibfk_1` FOREIGN KEY (`nic`) REFERENCES `Customers` (`nic`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

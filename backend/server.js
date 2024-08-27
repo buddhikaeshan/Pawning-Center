@@ -24,9 +24,9 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 const connection = mysql.createConnection({
     // host: 'sql.freedb.tech',
-    // user: 'freedb_nmtest',
-    // password: 'F6keBjVju?Pr&gz',
-    // database: 'freedb_delmamountview'
+    // user: 'freedb_nmtest1',
+    // password: 'UaDpRvJ?NeX96p9',
+    // database: 'freedb_nmpawning'
     host: 'localhost',
     user: 'root',
     password: '',
