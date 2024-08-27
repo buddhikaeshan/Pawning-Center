@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 26, 2024 at 04:32 PM
+-- Generation Time: Aug 27, 2024 at 06:30 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,10 +45,10 @@ INSERT INTO `admins` (`id`, `username`, `password`, `accountType`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Customers`
+-- Table structure for table `customers`
 --
 
-CREATE TABLE `Customers` (
+CREATE TABLE `customers` (
   `id` int(11) NOT NULL,
   `customerName` varchar(255) NOT NULL,
   `nic` varchar(20) NOT NULL,
@@ -57,20 +57,20 @@ CREATE TABLE `Customers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `Customers`
+-- Dumping data for table `customers`
 --
 
-INSERT INTO `Customers` (`id`, `customerName`, `nic`, `address`, `phone`) VALUES
+INSERT INTO `customers` (`id`, `customerName`, `nic`, `address`, `phone`) VALUES
 (1, 'z12', 'z12', 'z12', 'z12'),
 (4, 'test', 'test', 'test', 'test');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Items`
+-- Table structure for table `items`
 --
 
-CREATE TABLE `Items` (
+CREATE TABLE `items` (
   `id` int(11) NOT NULL,
   `customerName` varchar(255) DEFAULT NULL,
   `nic` varchar(20) DEFAULT NULL,
@@ -89,10 +89,10 @@ CREATE TABLE `Items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `Items`
+-- Dumping data for table `items`
 --
 
-INSERT INTO `Items` (`id`, `customerName`, `nic`, `address`, `phone`, `startDate`, `category`, `itemName`, `priceOfItem`, `image`, `endDate`, `totalPrice`, `interest`, `duration`, `status`) VALUES
+INSERT INTO `items` (`id`, `customerName`, `nic`, `address`, `phone`, `startDate`, `category`, `itemName`, `priceOfItem`, `image`, `endDate`, `totalPrice`, `interest`, `duration`, `status`) VALUES
 (4, 'test', 'test', 'test', 'test', '2024-08-20', 'Phone', 'test', 70000.00, NULL, NULL, 70000.00, 20.00, 1, 'Payment Received');
 
 --
@@ -107,16 +107,16 @@ ALTER TABLE `admins`
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- Indexes for table `Customers`
+-- Indexes for table `customers`
 --
-ALTER TABLE `Customers`
+ALTER TABLE `customers`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nic` (`nic`);
 
 --
--- Indexes for table `Items`
+-- Indexes for table `items`
 --
-ALTER TABLE `Items`
+ALTER TABLE `items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `nic` (`nic`);
 
@@ -131,15 +131,15 @@ ALTER TABLE `admins`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `Customers`
+-- AUTO_INCREMENT for table `customers`
 --
-ALTER TABLE `Customers`
+ALTER TABLE `customers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `Items`
+-- AUTO_INCREMENT for table `items`
 --
-ALTER TABLE `Items`
+ALTER TABLE `items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
@@ -147,10 +147,10 @@ ALTER TABLE `Items`
 --
 
 --
--- Constraints for table `Items`
+-- Constraints for table `items`
 --
-ALTER TABLE `Items`
-  ADD CONSTRAINT `Items_ibfk_1` FOREIGN KEY (`nic`) REFERENCES `Customers` (`nic`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `items`
+  ADD CONSTRAINT `items_ibfk_1` FOREIGN KEY (`nic`) REFERENCES `customers` (`nic`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
