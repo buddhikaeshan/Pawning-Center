@@ -237,7 +237,7 @@ const Products = () => {
                     </div>
 
                     <div className="table-responsive">
-                        <table className="table table-striped table-hover">
+                        <table className="table table-striped table-hover small-table table-sm p-1">
                             <thead>
                                 <tr>
                                     <th>ID</th>

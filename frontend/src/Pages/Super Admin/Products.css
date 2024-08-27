@@ -104,3 +104,13 @@
     text-align:left;
     font-size: 13px; 
 }
+
+.small-table {
+    font-size: 0.80rem; 
+  }
+  
+  .small-table th,
+  .small-table td {
+    padding: 0.1rem; /* Adjust padding */
+  }
+  
