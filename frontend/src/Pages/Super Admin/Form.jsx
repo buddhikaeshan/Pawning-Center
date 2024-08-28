@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import './Form.css';
 
+
 const Form = ({ onClose }) => {
     const [formData, setFormData] = useState({
         customerName: '',
@@ -40,8 +41,8 @@ const Form = ({ onClose }) => {
 
             if (response.status === 201) {
                 alert('Data submitted successfully!');
-                window.close();
-                window.opener.location.href = '/Customers';
+                onClose();
+                window.location.reload();
             } else {
                 alert('Unexpected response from server');
             }
@@ -51,6 +52,8 @@ const Form = ({ onClose }) => {
         }
     };
 
+    
+   
     return (
         <div className="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50">
             <div className="bg-light rounded p-4 shadow-lg w-100 overflow-auto" style={{ maxWidth: '400px', maxHeight: '90vh' }}>

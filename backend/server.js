@@ -320,8 +320,9 @@ const authenticateToken = (req, res, next) => {
 
 // Protected route 
 app.get('/api/protected', authenticateToken, (req, res) => {
-    res.status(200).json({ message: 'You have accessed a protected route!' });
-});
+    res.status(200).json({ message: 'You have accessed a protected route!', accountType: req.user.accountType });
+  });
+  
 
 // Logout route
 app.post('/api/logout', (req, res) => {

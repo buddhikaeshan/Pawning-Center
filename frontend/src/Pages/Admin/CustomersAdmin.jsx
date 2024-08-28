@@ -3,12 +3,15 @@ import axios from 'axios';
 import './Customers.css'
 import SidebarAdmin from '../../components/SidebarAdmin';
 
+import Form from '../Super Admin/Form';
+
 const CustomersAdmin = () => {
     const [customers, setCustomers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCustomer, setSelectedCustomer] = useState(null); // For selected customer to edit
     const [showModal, setShowModal] = useState(false);
-
+    const [openModal, setOpenModal] = useState(false);  
+    
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
@@ -22,9 +25,7 @@ const CustomersAdmin = () => {
         fetchCustomers();
     }, []);
 
-    const openFormWindow = () => {
-        window.open('/Form', 'Form', 'width=600,height=800');
-    };
+    
 
     // Filter customers based on search term
     const filteredCustomers = customers.filter(customer =>
@@ -49,14 +50,18 @@ const CustomersAdmin = () => {
         if (selectedCustomer) {
             try {
                 await axios.put(`http://localhost:5000/api/customers/${selectedCustomer.id}`, selectedCustomer);
-                setCustomers(customers.map(customer => 
+                setCustomers(customers.map(customer =>
                     customer.id === selectedCustomer.id ? selectedCustomer : customer
                 ));
-                setShowModal(false); // Close modal after update
+                setShowModal(false);
             } catch (error) {
                 console.error('Error updating customer:', error);
             }
         }
+    };
+    const handleAddCustomer = () => {
+        setSelectedCustomer(null);
+        setOpenModal(true);
     };
 
     return (
@@ -79,7 +84,7 @@ const CustomersAdmin = () => {
                         </div>
 
                         <div className="ms-md-3 mt-3 mt-md-0">
-                            <button className="btnAdd btnall btn-sm" id="" onClick={openFormWindow}>
+                            <button className="btnAdd btnall btn-sm" onClick={handleAddCustomer}>
                                 Add Customer
                             </button>
                         </div>
@@ -106,7 +111,7 @@ const CustomersAdmin = () => {
                                         <td>{customer.address}</td>
                                         <td>{customer.phone}</td>
                                         <td>
-                                            <button 
+                                            <button
                                                 className="btnUpdate btn-sm me-2"
                                                 onClick={() => {
                                                     setSelectedCustomer(customer);
@@ -115,7 +120,7 @@ const CustomersAdmin = () => {
                                             >
                                                 Update
                                             </button>
-                                            <button 
+                                            <button
                                                 className="btnDel btn-sm " disabled
                                                 onClick={() => handleDelete(customer.id)}
                                             >
@@ -191,6 +196,12 @@ const CustomersAdmin = () => {
                             </div>
                         </div>
                     )}
+
+                    
+                    {openModal && (
+                        <Form onClose={() => setOpenModal(false)} />
+                    )}
+
                 </div>
             </div>
         </div>

@@ -50,6 +50,7 @@ const CreateAdmin = () => {
 
                 <div className="col py-3 content-area">
                     <h1 className="text-center caption mb-4">Add New Admins</h1>
+                    <div className="interest-card">
                     {error && <div className="alert alert-danger">{error}</div>}
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         <div className="form-group">
@@ -104,6 +105,7 @@ const CreateAdmin = () => {
                             
                         </div>
                     </form>
+                    </div>
                 </div>
             </div>
         </div>

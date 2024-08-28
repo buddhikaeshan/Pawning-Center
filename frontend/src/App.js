@@ -1,4 +1,3 @@
-import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./Pages/Super Admin/Dashboard";
 import Customers from "./Pages/Super Admin/Customers";
@@ -13,7 +12,7 @@ import DashboardAdmin from "./Pages/Admin/DashboardAdmin";
 import CustomersAdmin from "./Pages/Admin/CustomersAdmin";
 import ProductsAdmin from "./Pages/Admin/ProductsAdmin";
 import InterestAdmin from "./Pages/Admin/InterestAdmin";
-// import ProfileAdmin from "./Pages/Admin/ProfileAdmin";
+
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -25,25 +24,75 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/Login" element={<Login />} />
 
-          <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          
+          <Route path="/Dashboard" element={
+            <ProtectedRoute allowedAccountTypes={['superadmin']}>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
 
-          <Route path="/Customers" element={<ProtectedRoute><Customers /></ProtectedRoute>} />
-          <Route path="/Products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+          <Route path="/Customers" element={
+            <ProtectedRoute allowedAccountTypes={['superadmin']}>
+              <Customers />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/Products" element={
+            <ProtectedRoute allowedAccountTypes={['superadmin']}>
+              <Products />
+            </ProtectedRoute>
+          } />
+
           <Route path="/Form" element={<Form />} />
-          <Route path="/CreateAdmin" element={<ProtectedRoute><CreateAdmin /></ProtectedRoute>} />
-          <Route path="/Interest" element={<ProtectedRoute><Interest /></ProtectedRoute>} />
 
-          <Route path="/Report" element={<ProtectedRoute><Report /></ProtectedRoute>} />
-          <Route path="/View" element={<ProtectedRoute><PdfView /></ProtectedRoute>} />
+          <Route path="/CreateAdmin" element={
+            <ProtectedRoute allowedAccountTypes={['superadmin']}>
+              <CreateAdmin />
+            </ProtectedRoute>
+          } />
 
+          <Route path="/Interest" element={
+            <ProtectedRoute allowedAccountTypes={['superadmin']}>
+              <Interest />
+            </ProtectedRoute>
+          } />
 
-          <Route path="/DashboardAdmin" element={ <ProtectedRoute> <DashboardAdmin /> </ProtectedRoute> } />
-          <Route path="/CustomersAdmin" element={ <ProtectedRoute> <CustomersAdmin /> </ProtectedRoute> } />
-          <Route path="/ProductsAdmin" element={ <ProtectedRoute> <ProductsAdmin /> </ProtectedRoute> } />
-          <Route path="/InterestAdmin" element={ <ProtectedRoute> <InterestAdmin /> </ProtectedRoute> } />
-          {/* <Route path="/ProfileAdmin" element={ <ProtectedRoute> <ProfileAdmin /> </ProtectedRoute> } /> */}
+          <Route path="/Report" element={
+            <ProtectedRoute allowedAccountTypes={['superadmin']}>
+              <Report />
+            </ProtectedRoute>
+          } />
 
+          <Route path="/View" element={
+            <ProtectedRoute allowedAccountTypes={['superadmin', 'admin']}>
+              <PdfView />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/DashboardAdmin" element={
+            <ProtectedRoute allowedAccountTypes={['admin']}>
+              <DashboardAdmin />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/CustomersAdmin" element={
+            <ProtectedRoute allowedAccountTypes={['admin']}>
+              <CustomersAdmin />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/ProductsAdmin" element={
+            <ProtectedRoute allowedAccountTypes={['admin']}>
+              <ProductsAdmin />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/InterestAdmin" element={
+            <ProtectedRoute allowedAccountTypes={['admin']}>
+              <InterestAdmin />
+            </ProtectedRoute>
+          } />
+
+          
         </Routes>
       </BrowserRouter>
     </div>
