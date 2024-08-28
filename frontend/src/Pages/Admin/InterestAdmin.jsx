@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '../../components/SidebarAdmin';
 import './Interest.css'
 import { useState } from 'react';
 
