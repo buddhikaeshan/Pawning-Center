@@ -6,11 +6,11 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showPassword, setShowPassword] = useState(false); 
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
 
     try {
       const response = await fetch('http://localhost:5000/api/login', {
@@ -18,7 +18,7 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // This ensures cookies are sent with the request
+        credentials: 'include', 
         body: JSON.stringify({ username, password }),
       });
 
@@ -63,7 +63,7 @@ const Login = () => {
                 <div className="form-com position-relative">
                   <label htmlFor="password">Password</label>
                   <input
-                    type={showPassword ? 'text' : 'password'} // Toggle input type based on state
+                    type={showPassword ? 'text' : 'password'} 
                     className="text-box"
                     id="password"
                     placeholder="Type Password"
@@ -72,7 +72,7 @@ const Login = () => {
                   />
                   <button
                     type="button"
-                    className="show-password-btn"
+                    className="show-password-btn mt-2"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
