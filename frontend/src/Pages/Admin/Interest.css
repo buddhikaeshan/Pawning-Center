@@ -72,7 +72,11 @@ p {
 .error p {
     color: red;
 }
-
+.interest-card{
+   position:absolute;
+   top: 10;
+   left: 45%;
+}
 @media (max-width: 768px) {
     .calculater {
         flex-direction: column;
@@ -86,6 +90,11 @@ p {
     .caption{
         font-size: 20px;
     }
+    .interest-card{
+        position:absolute;
+        top: 10;
+        left: 40%;
+     }
 input[type=number] {
     margin: 5px;
 }
@@ -116,7 +125,8 @@ input[type=number] {
         padding:6px 16px;
         width: 100%;
     }
-    .btn {
+    .btnall {
         left: 4%;
+        width: 100px;
     }
 }
